@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import ClienteService from "../../Services/ClienteService";
-import {Link, useNavigate} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import '../../css/style.css';
 
 export const ListClientes = () => {
@@ -42,11 +42,10 @@ export const ListClientes = () => {
     function formatoCedula(tipoCliente, cedula) {
         console.log(tipoCliente, cedula)
         if (tipoCliente === true && cedula.length === 9) {
-            return `${cedula.slice(0, 1)}-${cedula.slice(1,5)}-${cedula.slice(5)}`;
+            return `${cedula.slice(0, 1)}-${cedula.slice(1, 5)}-${cedula.slice(5)}`;
         }
-        if(tipoCliente === false && cedula.length === 10)
-        {
-            return `${cedula.slice(0, 1)}-${cedula.slice(1,4)}-${cedula.slice(5)}`;
+        if (tipoCliente === false && cedula.length === 10) {
+            return `${cedula.slice(0, 1)}-${cedula.slice(1, 4)}-${cedula.slice(5)}`;
         }
 
         return cedula;

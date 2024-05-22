@@ -27,4 +27,7 @@ public class FacturaDetalle {
     private int idProducto;
     @Min(value = 0, message = "{error.Negative}")
     private int cantidad;
+    @ManyToOne
+    @JoinColumn(name = "factura_id")
+    private Factura factura;
 }

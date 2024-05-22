@@ -33,6 +33,7 @@ public class Factura {
     @Min(value = 0, message = "{error.Negative}")
     private Double finalPrice;
 
-    @OneToMany(mappedBy = "facturadetalle")
+    @OneToMany(mappedBy = "factura", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FacturaDetalle> listFacturasDetalles = new ArrayList<>();
+
 }
