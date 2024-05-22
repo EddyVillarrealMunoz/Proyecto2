@@ -18,21 +18,13 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "facturas")
-public class Factura {
+@Table(name = "facturas_detalles")
+public class FacturaDetalle {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Temporal(TemporalType.DATE)
-    private Date date;
     @NotEmpty(message = "{error.Empty}")
-    private String cedulaProveedor;
-    @NotEmpty(message = "{error.Empty}")
-    private String cedulaCliente;
-    @NotEmpty(message = "{error.Empty}")
-    private String tipoPago;
+    private int idProducto;
     @Min(value = 0, message = "{error.Negative}")
-    private Double finalPrice;
-
-    @OneToMany(mappedBy = "facturadetalle")
-    private List<FacturaDetalle> listFacturasDetalles = new ArrayList<>();
+    private int cantidad;
 }
