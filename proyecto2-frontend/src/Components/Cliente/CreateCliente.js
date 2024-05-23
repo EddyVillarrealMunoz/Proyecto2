@@ -1,135 +1,252 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import ClienteService from "../../Services/ClienteService";
-import { Link, useNavigate } from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
+import InputMask from "react-input-mask";
 
 export const CreateCliente = () => {
 
-    const [id, setId] = useState('');
+    //------------------------------------------------------------------------------------------------------------------
+    // CONSTANTES
+    //------------------------------------------------------------------------------------------------------------------
+    let [id, setId] = useState('');
     const [tipoCliente, setTipoCliente] = useState('');
     const [name, setName] = useState('');
     const [direccion, setDireccion] = useState('');
-    const [telefono, setTelefono] = useState('');
+    let [telefono, setTelefono] = useState('');
     const [email, setEmail] = useState('');
 
     const navigate = useNavigate();
+    const {idP} = useParams();
+    const isDisabled = Boolean(idP);
+
+    const [errors, setErrors] = useState({
+        id: '',
+        tipoCliente: '',
+        name: '',
+        direccion: '',
+        telefono: '',
+        email: ''
+    })
+
+    //Expresión regular para validar correo electrónico
+    const validateEmail = (email) => {
+        // Expresión regular para validar correo electrónico
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(String(email).toLowerCase());
+    };
 
     const saveCliente = async (e) => {
         e.preventDefault();
 
+        /*
         if (!id || !tipoCliente || !name || !direccion || !telefono || !email) { // Validación de los campos del formulario
             alert('Por favor, rellena todos los campos');
             return;
         }
+        */
+        if (validateForm()) {
+            telefono = telefono.replace(/-/g, '');
+            id = id.replace(/-/g, '');
 
-        const cliente = { id, tipoCliente, name, direccion, telefono, email};
+            const cliente = {id, tipoCliente, name, direccion, telefono, email};
+            console.log(cliente);
 
-        try {
-            const response = await ClienteService.saveCliente(cliente);
-            console.log(response.data);
-            navigate('/clientes');
-        } catch (error) {
-            console.error(error);
-            alert('Hubo un error al guardar el cliente');
+            try {
+                const response = await ClienteService.saveCliente(cliente);
+                console.log(response.data);
+                navigate('/clientes');
+            } catch (error) {
+                console.error(error);
+                alert('Hubo un error al guardar el cliente');
+            }
         }
     }
+
+    //------------------------------------------------------------------------------------------------------------------
+    // USE EFFECT / OBTENCION DE DATOS
+    //------------------------------------------------------------------------------------------------------------------
+    useEffect(() => {
+        if (id) {
+            ClienteService.getClienteById(id).then((response) => {
+                setId(response.data.id);
+                setTipoCliente(response.data.tipoCliente);
+                setName(response.data.name);
+                setDireccion(response.data.direccion);
+                setTelefono(response.data.telefono);
+                setEmail(response.data.email);
+            }).catch(error => {
+                console.error("Error al obtener el cliente: ", error);
+            })
+        }
+    }, []);
+
+    //------------------------------------------------------------------------------------------------------------------
+    // FUNCIONES
+    //------------------------------------------------------------------------------------------------------------------
+    function mostrarBotonGuardar() {
+        if (idP) {
+            return null;
+        } else {
+            return <button className='btn btn-success' onClick={(e) => saveCliente(e)}>Save</button>
+        }
+    }
+
+    function titulo() {
+        if (idP) {
+            return <h1 className={"text-center card-header"}>Ver Cliente</h1>;
+        } else {
+            return <h1 className={"text-center card-header"}>Nuevo Cliente</h1>;
+        }
+    }
+
+    function validateForm() {
+        let valid = true;
+
+        const errorsCopy = {...errors};
+
+        //Validar tipo de cliente
+        if (!tipoCliente) {
+            errorsCopy.tipoCliente = "El tipo de cliente es requerido";
+            valid = false;
+        } else {
+            errorsCopy.tipoCliente = "";
+        }
+
+        //Validar id
+        if (!id) {
+            errorsCopy.id = "El id es requerido";
+            valid = false;
+        } else if (tipoCliente && id.length !== 11) {
+            errorsCopy.id = "El id debe tener una longitud de 9 caracteres para clientes fisicos";
+            valid = false;
+        } else if (!tipoCliente && id.length !== 12) {
+            errorsCopy.id = "El id debe tener una longitud de 10 caracteres para clientes juridicos";
+            valid = false;
+        } else {
+            errorsCopy.id = "";
+        }
+
+        if (!name) {
+            errorsCopy.name = "El nombre es requerido";
+            valid = false;
+        } else {
+            errorsCopy.name = "";
+        }
+
+        if (!direccion) {
+            errorsCopy.direccion = "La dirección es requerida";
+            valid = false;
+        } else {
+            errorsCopy.direccion = "";
+        }
+
+        if (!telefono) {
+            errorsCopy.telefono = "El teléfono es requerido";
+            valid = false;
+        } else {
+            errorsCopy.telefono = "";
+        }
+
+        if (!email) {
+            errorsCopy.email = "El email es requerido";
+            valid = false;
+        } else if (!validateEmail(email)) {
+            errorsCopy.email = "El email no es válido";
+            valid = false;
+        } else {
+            errorsCopy.email = "";
+        }
+
+        setErrors(errorsCopy);
+        return valid;
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    // HTML
+    //------------------------------------------------------------------------------------------------------------------
 
     return (
         <div>
             <div className='container'>
-                <div className='row'>
-                    <div className='card col-md-6 offset-md-3 offset-md-3'>
-                        <h2 className='text-center'>
-                            <p className='text-center'>Agregar Cliente</p>
-                        </h2>
-                        <div className='card-body'>
-                            <form>
-
-                                <div className='radio-option'>
-                                    <input
-                                        type="radio"
-                                        name="type"
-                                        value="true"
-                                        checked={tipoCliente === true}
-                                        onChange={(e) => setTipoCliente(e.target.value === "true")}
-                                    />
-                                    <label htmlFor="Producto">Físico</label>
-                                </div>
-                                <div className='radio-option'>
-                                    <input
-                                        type="radio"
-                                        name="type"
-                                        value="false"
-                                        checked={tipoCliente === false}
-                                        onChange={(e) => setTipoCliente(e.target.value !== "true")}
-                                    />
-                                    <label htmlFor="Servicio">Jurídico</label>
-                                </div>
-
-                                <div className='form-group mb-2'>
-                                    <label className="form-label"></label>
-                                    <input
-                                        type="text"
-                                        placeholder="Digite id "
-                                        name="id"
-                                        className="form-control"
-                                        value={id}
-                                        onChange={(e) => setId(e.target.value)}
-                                    />
-                                </div>
-
-                                <div className='form-group mb-2'>
-                                    <label className="form-label"></label>
-                                    <input
-                                        type="text"
-                                        placeholder="Digite nombre "
-                                        name="name"
-                                        className="form-control"
-                                        value={name}
-                                        onChange={(e) => setName(e.target.value)}
-                                    />
-                                </div>
-
-                                <div className='form-group mb-2'>
-                                    <label className="form-label"></label>
-                                    <input
-                                        type="text"
-                                        placeholder="Digite dirección "
-                                        name="direccion"
-                                        className="form-control"
-                                        value={direccion}
-                                        onChange={(e) => setDireccion(e.target.value)}
-                                    />
-                                </div>
-
-                                <div className='form-group mb-2'>
-                                    <label className="form-label"></label>
-                                    <input
-                                        type="tel"
-                                        placeholder="Digite teléfono "
-                                        name="telefono"
-                                        className="form-control"
-                                        value={telefono}
-                                        onChange={(e) => setTelefono(e.target.value)}
-                                    />
-                                </div>
-
-                                <div className='form-group mb-2'>
-                                    <label className="form-label"></label>
-                                    <input
-                                        type="email"
-                                        placeholder="Digite email "
-                                        name="email"
-                                        className="form-control"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                    />
-                                </div>
-
-                                <button className='btn btn-success' onClick={(e) => saveCliente(e)}>Save</button>
-                                &nbsp;&nbsp;
-                                <Link to='/clientes' className='btn btn-danger'>Cancelar</Link>
-                            </form>
-                        </div>
+                <br/>
+                <br/>
+                <div className='card col-md-6 offset-md-3 offset-md-3'>
+                    {titulo()}
+                    <div className='card-body'>
+                        <form>
+                            <div className={"mb-3"}>
+                                <select value={tipoCliente} id="tipoCliente" disabled={isDisabled}
+                                        className={`form-control ${errors.tipoCliente ? 'is-invalid' : ''}`}
+                                        onChange={(e) => setTipoCliente(e.target.value)}>
+                                    <option value="">Seleccione un Tipo de Identificacion</option>
+                                    <option value="true">Fisica</option>
+                                    <option value="false">Juridica</option>
+                                </select>
+                                {errors.tipoCliente && <div className={"invalid-feedback"}>{errors.tipoCliente}</div>}
+                            </div>
+                            <div className={"mb-3"}>
+                                <InputMask
+                                    disabled={isDisabled}
+                                    mask={tipoCliente === "true" ? "9-9999-9999" :  "9-999-999999"}
+                                    type="text"
+                                    placeholder="Digite id "
+                                    name="id"
+                                    className={`form-control ${errors.id ? 'is-invalid' : ''}`}
+                                    value={id}
+                                    onChange={(e) => setId(e.target.value)}
+                                />
+                                {errors.id && <div className={"invalid-feedback"}>{errors.id}</div>}
+                            </div>
+                            <div className={"mb-3"}>
+                                <input
+                                    disabled={isDisabled}
+                                    type="text"
+                                    placeholder="Digite nombre "
+                                    name="name"
+                                    className={`form-control ${errors.name ? 'is-invalid' : ''}`}
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                />
+                                {errors.name && <div className={"invalid-feedback"}>{errors.name}</div>}
+                            </div>
+                            <div className={"mb-3"}>
+                                <input
+                                    disabled={isDisabled}
+                                    type="text"
+                                    placeholder="Digite dirección "
+                                    name="direccion"
+                                    className={`form-control ${errors.direccion ? 'is-invalid' : ''}`}
+                                    value={direccion}
+                                    onChange={(e) => setDireccion(e.target.value)}
+                                />{errors.direccion && <div className={"invalid-feedback"}>{errors.direccion}</div>}
+                            </div>
+                            <div className={"mb-3"}>
+                                <InputMask
+                                    mask={"9999-9999"}
+                                    disabled={isDisabled}
+                                    type="tel"
+                                    placeholder="Digite teléfono "
+                                    name="telefono"
+                                    className={`form-control ${errors.telefono ? 'is-invalid' : ''}`}
+                                    value={telefono}
+                                    onChange={(e) => setTelefono(e.target.value)}
+                                />{errors.telefono && <div className={"invalid-feedback"}>{errors.telefono}</div>}
+                            </div>
+                            <div className={"mb-3"}>
+                                <input
+                                    disabled={isDisabled}
+                                    type="email"
+                                    placeholder="Digite email "
+                                    name="email"
+                                    className={`form-control ${errors.email ? 'is-invalid' : ''}`}
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                />{errors.email && <div className={"invalid-feedback"}>{errors.email}</div>}
+                            </div>
+                            {mostrarBotonGuardar()}
+                            &nbsp;&nbsp;
+                            <Link to='/clientes' className='btn btn-danger'>Volver</Link>
+                        </form>
                     </div>
                 </div>
             </div>

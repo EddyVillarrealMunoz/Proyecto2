@@ -13,7 +13,9 @@ export const Login = () => {
 
         try {
             const response = await axios.post('http://localhost:8080/api/v1/login', { id, password });
+            console.log("Id y password:" + id,password)
             const user = response.data;
+            console.log("User" + user)
 
             // Almacenar la información del usuario y el id del proveedor en el almacenamiento local
             localStorage.setItem('user', JSON.stringify(user));
