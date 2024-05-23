@@ -7,6 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import com.example.proyecto2backend.Logic.Model.ActComercial;
+import com.example.proyecto2backend.Logic.Model.Cliente;
+
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -31,4 +34,8 @@ public class Proveedor {
     @ManyToOne
     @JoinColumn(name="act_comercial_id", nullable = true)
     private ActComercial actComercial;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "proveedor_id", nullable = true) //La tabla cliente tendrá el proveedor_id
+    private List<Cliente> clientes;
 }
