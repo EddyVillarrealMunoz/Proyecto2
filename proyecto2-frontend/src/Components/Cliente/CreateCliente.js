@@ -116,10 +116,10 @@ export const CreateCliente = () => {
         if (!id) {
             errorsCopy.id = "El id es requerido";
             valid = false;
-        } else if (tipoCliente && id.length !== 11) {
+        } else if (tipoCliente === true && id.length !== 11) {
             errorsCopy.id = "El id debe tener una longitud de 9 caracteres para clientes fisicos";
             valid = false;
-        } else if (!tipoCliente && id.length !== 12) {
+        } else if (tipoCliente === false && id.length !== 12) {
             errorsCopy.id = "El id debe tener una longitud de 10 caracteres para clientes juridicos";
             valid = false;
         } else {
@@ -164,7 +164,6 @@ export const CreateCliente = () => {
     //------------------------------------------------------------------------------------------------------------------
     // HTML
     //------------------------------------------------------------------------------------------------------------------
-
     return (
         <div>
             <div className='container'>
