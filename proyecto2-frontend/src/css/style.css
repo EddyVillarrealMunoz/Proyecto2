@@ -269,3 +269,7 @@ input[type="submit"]:hover, input[type="date"]:hover, input[type="radio"]:hover 
     margin-right: 20px;
     display: inline-block;
 }
+
+.input-cantidad {
+    width: 50px;
+}

@@ -1,21 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import FacturaService from "../../Services/FacturaService";
 import { Link, useNavigate } from "react-router-dom";
+
+import ProductoService from "../../Services/ProductoService";
+import ClienteService from "../../Services/ClienteService";
+
+// ...
 
 import '../../css/style.css';
 
 export const CreateFactura = () => {
 
-
-
     const[cedulaCliente,setCedulaCliente]=useState('');
     const[tipoPago,setTipoPago]=useState('');
     const[date,setDate]=useState('');
-    const [idProducto, setIdProducto] = useState('');
     //const [cantidad,setCantidad]=useState('');
     const[finalPrice,setFinalPrice]=useState('');
     const[listFacturasDetalles,setlistFacturasDetalles]=useState('');
     const[cedulaProveedor,setCedulaProveedor]=useState('');
+
+    const [productos, setProductos] = useState([]);
+    const [clientes, setClientes] = useState([]);
+    const [selectedProductos, setSelectedProductos] = useState([]);
+    const [productoCantidades, setProductoCantidades] = useState({});
+    const [selectedCliente, setSelectedCliente] = useState(null);
 
     const tipo_pago = ['tarjeta','efectivo'];
     const navigate = useNavigate();
@@ -23,7 +31,7 @@ export const CreateFactura = () => {
     const saveFactura = async (e) => {
         e.preventDefault();
 
-        if ( !idProducto || !cedulaCliente || !tipoPago || !date) { // Validación de los campos del formulario
+        if ( !cedulaCliente || !tipoPago || !date) { // Validación de los campos del formulario
             alert('Por favor, rellena todos los campos');
             return;
         }
@@ -41,6 +49,19 @@ export const CreateFactura = () => {
         }
     }
 
+    useEffect(() => {
+        ProductoService.getProductos().then((response) => {
+            setProductos(response.data);
+        }).catch((error) => {
+            console.log(error);
+        });
+
+        ClienteService.getClientes().then((response) => {
+            setClientes(response.data);
+        }).catch((error) => {
+            console.log(error);
+        });
+    }, []);
 
 
     return (
@@ -55,27 +76,92 @@ export const CreateFactura = () => {
                             <form>
 
                                 <div className='form-group mb-2'>
-                                    <label className="form-label"></label>
-                                    <input
-                                        type="text"
-                                        placeholder="Ingrese el ID del Producto"
-                                        name="idproducto"
-                                        className="form-control"
-                                        value={idProducto}
-                                        //onChange={(e) => setIdProducto(e.target.value)}
-                                    />
+                                    <label className="form-label">Producto</label>
+                                    <br/>
+                                    {productos.length > 0 ? (
+                                        <table className="table table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th>Descripción</th>
+                                                <th>Iva</th>
+                                                <th>Medida</th>
+                                                <th>Precio</th>
+                                                <th>Tipo</th>
+                                                <th>Seleccionar</th>
+                                                <th>Cantidad</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {productos.map((producto) => (
+                                                <tr key={producto.id}>
+                                                    <td>{producto.description}</td>
+                                                    <td>{producto.ivaFee}</td>
+                                                    <td>{producto.measure}</td>
+                                                    <td>{producto.price}</td>
+                                                    <td>{producto.type ? "Producto" : "Servicio"}</td>
+                                                    <td>
+                                                        <input type="checkbox" name="producto" value={producto.id}
+                                                               onChange={(e) => {
+                                                                   if (e.target.checked) {
+                                                                       setSelectedProductos([...selectedProductos, producto]);
+                                                                   } else {
+                                                                       setSelectedProductos(selectedProductos.filter(prod => prod.id !== producto.id));
+                                                                   }
+                                                               }}
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <input type="number" min="1" name="cantidad"
+                                                               className="input-cantidad"
+                                                               onChange={(e) => {
+                                                                   setProductoCantidades({
+                                                                       ...productoCantidades,
+                                                                       [producto.id]: e.target.value
+                                                                   });
+                                                               }}
+                                                        />
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                            </tbody>
+                                        </table>
+                                    ) : (
+                                        <p>Actualmente no existen productos para elegir</p>
+                                    )}
                                 </div>
 
                                 <div className='form-group mb-2'>
-                                    <label className="form-label"></label>
-                                    <input
-                                        type="text"
-                                        placeholder="Ingrese el ID del Cliente"
-                                        name="idcliente"
-                                        className="form-control"
-                                        value={cedulaCliente}
-                                        //onChange={(e) => setCedulaCliente(e.target.value)}
-                                    />
+                                    <label className="form-label">Cliente</label>
+                                    <br/>
+                                    {clientes.length > 0 ? (
+                                        <table className="table table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th>Nombre</th>
+                                                <th>Email</th>
+                                                <th>Seleccionar</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {clientes.map((cliente) => (
+                                                <tr key={cliente.id}>
+                                                    <td>{cliente.name}</td>
+                                                    <td>{cliente.email}</td>
+                                                    <td>
+                                                        <input type="radio" name="cliente" value={cliente.id}
+                                                               onChange={(e) => {
+                                                                   const selectedCli = clientes.find(cli => cli.id === Number(e.target.value));
+                                                                   setSelectedCliente(selectedCli);
+                                                               }}
+                                                        />
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                            </tbody>
+                                        </table>
+                                    ) : (
+                                        <p>Actualmente no existen clientes para elegir</p>
+                                    )}
                                 </div>
 
                                 <div className='radio-option'>

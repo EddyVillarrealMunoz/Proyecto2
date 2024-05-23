@@ -40,6 +40,7 @@ function App() {
                     <Route exact path = '/profile-proveedor/:id'      element = {< ProfileProveedor/>}></Route>
                     <Route exact path = '/facturas'                   element=  {< ListFacturas/>}></Route>
                     <Route exact path = '/save-facturas'              element=  {< CreateFactura/>}></Route>
+                    <Route exact path = '/update-producto/:id'        element = {< CreateProducto/>}></Route>
                 </Routes>
             </div>
             {<Footer/>}
