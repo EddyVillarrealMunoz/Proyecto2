@@ -15,6 +15,10 @@ export const Login = () => {
             const response = await axios.post('http://localhost:8080/api/v1/login', { id, password });
             const user = response.data;
 
+            // Almacenar la información del usuario y el id del proveedor en el almacenamiento local
+            localStorage.setItem('user', JSON.stringify(user));
+            localStorage.setItem('proveedorId', id);
+
             if (user.rol === 'ADM') {
                 navigate('/admin-profile');
             } else if (user.rol === 'PRO') {

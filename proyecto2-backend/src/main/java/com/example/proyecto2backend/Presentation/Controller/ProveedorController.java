@@ -30,22 +30,24 @@ public class ProveedorController {
         return proveedorRepository.save(proveedor);
     }
 
+    @GetMapping("/proveedores/{id}")
     public ResponseEntity<Proveedor> findProveedorById(@PathVariable String id) {
         Proveedor proveedor = proveedorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Proveedor not found with id: " + id));
         return ResponseEntity.ok(proveedor);
     }
 
-    @PutMapping("/proveedores/{id}")
-    public ResponseEntity<Proveedor> updateProveedor(@PathVariable String id, @RequestBody Proveedor proveedor) {
+    @PutMapping("/proveedores/{idUpdate}")
+    public ResponseEntity<Proveedor> updateProveedor(@PathVariable String idUpdate, @RequestBody Proveedor proveedor) {
 
-        Proveedor proveedorUpdate = proveedorRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Proveedor not found with id: " + id));
+        Proveedor proveedorUpdate = proveedorRepository.findById(idUpdate)
+                .orElseThrow(() -> new ResourceNotFoundException("Proveedor not found with id: " + idUpdate));
 
         proveedorUpdate.setName(proveedor.getName());
         proveedorUpdate.setEmail(proveedor.getEmail());
         proveedorUpdate.setPassword(proveedor.getPassword());
         proveedorUpdate.setAccepted(proveedor.isAccepted());
+        proveedorUpdate.setActComercial(proveedor.getActComercial());
 
         Proveedor updatedProveedor = proveedorRepository.save(proveedorUpdate);
         return ResponseEntity.ok(updatedProveedor);

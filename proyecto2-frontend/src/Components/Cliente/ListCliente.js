@@ -22,6 +22,31 @@ export const ListClientes = () => {
     }, []);
 
     //------------------------------------------------------------------------------------------------------------------
+    // Validar credenciales
+    //------------------------------------------------------------------------------------------------------------------
+
+    useEffect(() => {
+        // Obtener la información del usuario y id del proveedor que ha ingresado a este componente
+        const user = JSON.parse(localStorage.getItem('user'));
+        const proveedorId = localStorage.getItem('proveedorId');
+
+        // Verificar si el usuario es un proveedor y ha iniciado sesión
+        if (!user || user.rol !== 'PRO') {
+            alert('Permisos denegados');
+            navigator('/login');
+            return;
+        }
+
+        console.log(`El proveedor con id ${proveedorId} ha ingresado`);
+
+        ClienteService.getClientes().then((response) => {
+            setClientes(response.data);
+        }).catch((error) => {
+            console.log(error);
+        });
+    }, []);
+
+    //------------------------------------------------------------------------------------------------------------------
     // FUNCIONES
     //------------------------------------------------------------------------------------------------------------------
     function addCliente() {
