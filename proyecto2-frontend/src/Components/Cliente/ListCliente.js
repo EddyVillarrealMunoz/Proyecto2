@@ -11,21 +11,10 @@ export const ListClientes = () => {
     const navigator = useNavigate();
 
     //------------------------------------------------------------------------------------------------------------------
-    // Obtener Data
+    // Validar credenciales / Obtener data
     //------------------------------------------------------------------------------------------------------------------
-    useEffect(() => {
-        ClienteService.getClientes().then((response) => {
-            setClientes(response.data);
-        }).catch((error) => {
-            console.log(error);
-        });
-    }, []);
-
-    //------------------------------------------------------------------------------------------------------------------
-    // Validar credenciales
-    //------------------------------------------------------------------------------------------------------------------
-
-    useEffect(() => {
+    useEffect(() =>
+    {
         // Obtener la información del usuario y id del proveedor que ha ingresado a este componente
         const user = JSON.parse(localStorage.getItem('user'));
         const proveedorId = localStorage.getItem('proveedorId');
@@ -65,7 +54,13 @@ export const ListClientes = () => {
         console.log("Eliminar cliente con id: ", id);
 
         ClienteService.deleteCliente(id).then(() => {
-            ClienteService.getClientes();
+            console.log("Cliente eliminado con éxito")
+            console.log("Actualizando lista de clientes")
+            ClienteService.getClientes().then((response) => {
+                setClientes(response.data);
+            }).catch((error) => {
+                console.log("Error al obtener la lista de clientes: ", error);
+            });
         }).catch(error => {
             console.error("Error al eliminar el cliente: ", error);
         })
@@ -125,8 +120,7 @@ export const ListClientes = () => {
                                         <div className={"text-center"}>
                                             <button className="btn btn-info m-1">Ver</button>
                                             <button className="btn btn-danger m-1"
-                                                    onClick={() => removeCliente(cliente.id)}>
-                                                Eliminar
+                                                    onClick={() => removeCliente(cliente.id)}>Eliminar
                                             </button>
                                         </div>
                                     </td>
