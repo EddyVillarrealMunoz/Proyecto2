@@ -43,6 +43,11 @@ export const ListClientes = () => {
         navigator("/save-clientes");
     }
 
+    function viewCliente(idP) {
+        console.log("Ver cliente con id: ", idP);
+        navigator(`/clientes/view/${idP}`);
+    }
+
     function removeCliente(id) {
         console.log("Eliminar cliente con id: ", id);
 
@@ -111,7 +116,7 @@ export const ListClientes = () => {
                                     <td>{cliente.email}</td>
                                     <td>
                                         <div className={"text-center"}>
-                                            <button className="btn btn-info m-1">Ver</button>
+                                            <button className="btn btn-info m-1" onClick={() => viewCliente(cliente.id)}>Ver</button>
                                             <button className="btn btn-danger m-1"
                                                     onClick={() => removeCliente(cliente.id)}>Eliminar
                                             </button>

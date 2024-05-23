@@ -30,9 +30,11 @@ public class ClienteController {
         return clienteRepository.save(cliente);
     }
 
+    @GetMapping("/clientes/{id}")
     public ResponseEntity<Cliente> findClienteById(@PathVariable String id) {
         Cliente cliente = clienteRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cliente not found with id: " + id));
+        System.out.println(cliente.toString());
         return ResponseEntity.ok(cliente);
     }
 

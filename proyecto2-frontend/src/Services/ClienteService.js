@@ -12,8 +12,8 @@ class ClienteService {
         return axios.post(CLIENTE_BASE_REST_API_URL, cliente);
     }
 
-    getClienteById(clienteId) {
-        return axios.get(CLIENTE_BASE_REST_API_URL + '/' + clienteId);
+    getClienteById(idP) {
+        return axios.get(CLIENTE_BASE_REST_API_URL + '/' + idP);
     }
 
     updateCliente(id, cliente) {

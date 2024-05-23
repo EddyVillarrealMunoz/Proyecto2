@@ -66,19 +66,22 @@ export const CreateCliente = () => {
     // USE EFFECT / OBTENCION DE DATOS
     //------------------------------------------------------------------------------------------------------------------
     useEffect(() => {
-        if (id) {
-            ClienteService.getClienteById(id).then((response) => {
+        console.log("idP: ", idP)
+        if (idP) {
+            ClienteService.getClienteById(idP).then((response) => {
+                console.log("response: ", response.data)
                 setId(response.data.id);
                 setTipoCliente(response.data.tipoCliente);
                 setName(response.data.name);
                 setDireccion(response.data.direccion);
                 setTelefono(response.data.telefono);
                 setEmail(response.data.email);
+
             }).catch(error => {
                 console.error("Error al obtener el cliente: ", error);
             })
         }
-    }, []);
+    }, [idP]);
 
     //------------------------------------------------------------------------------------------------------------------
     // FUNCIONES
@@ -186,7 +189,7 @@ export const CreateCliente = () => {
                             <div className={"mb-3"}>
                                 <InputMask
                                     disabled={isDisabled}
-                                    mask={tipoCliente === "true" ? "9-9999-9999" :  "9-999-999999"}
+                                    mask={tipoCliente === "true" || 1 ? "9-9999-9999" :  "9-999-999999"}
                                     type="text"
                                     placeholder="Digite id "
                                     name="id"
