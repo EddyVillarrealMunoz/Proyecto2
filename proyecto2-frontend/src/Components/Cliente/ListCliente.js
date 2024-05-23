@@ -30,8 +30,15 @@ export const ListClientes = () => {
         const user = JSON.parse(localStorage.getItem('user'));
         const proveedorId = localStorage.getItem('proveedorId');
 
-        // Verificar si el usuario es un proveedor y ha iniciado sesión
-        if (!user || user.rol !== 'PRO') {
+        // Verificar si el usuario ha iniciado sesión
+        if (!user) {
+            alert('Debe iniciar sesión para acceder a esta página');
+            navigator('/login');
+            return;
+        }
+
+        // Verificar si el usuario es un proveedor
+        if (user.rol !== 'PRO') {
             alert('Permisos denegados');
             navigator('/login');
             return;
