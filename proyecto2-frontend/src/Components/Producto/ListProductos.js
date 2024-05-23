@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ProductoService from "../../Services/ProductoService";
 import { Link } from 'react-router-dom';
 
+
 export const ListProductos = () => {
     const [productos, setProductos] = useState([]);
 
@@ -24,6 +25,7 @@ export const ListProductos = () => {
                     <th>Medida</th>
                     <th>Precio</th>
                     <th>IVA</th>
+                    <th>Editar</th>
 
                 </tr>
                 </thead>
@@ -37,6 +39,7 @@ export const ListProductos = () => {
                                 <td>{producto.measure}</td>
                                 <td>{producto.price}</td>
                                 <td>{producto.ivaFee}</td>
+                                <Link className= 'btn btn-info' to={`/update-producto/${producto.id}`}>Editar</Link>
                             </tr>
                     )
                 }
