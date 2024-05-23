@@ -11,7 +11,7 @@ export const Header = () => {
                     {<a href="/"> <img className="logoHome" src={facturaImage} alt=""/> </a>}
                 </div>
                 <nav className="listaHeader">
-                    <a href="/factura">Facturas</a>
+                    <a href="/facturas">Facturas</a>
                     <a href="/productos">Productos</a>
                     <a href="/clientes">Clientes</a>
                     <a href="/">Salir</a>

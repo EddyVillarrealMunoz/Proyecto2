@@ -52,6 +52,71 @@ export const CreateFactura = () => {
                             <p className='text-center'>Creando Factura</p>
                         </h1>
                         <div className='card-body'>
+                            <form>
+
+                                <div className='form-group mb-2'>
+                                    <label className="form-label"></label>
+                                    <input
+                                        type="text"
+                                        placeholder="Ingrese el ID del Producto"
+                                        name="idproducto"
+                                        className="form-control"
+                                        value={idProducto}
+                                        //onChange={(e) => setIdProducto(e.target.value)}
+                                    />
+                                </div>
+
+                                <div className='form-group mb-2'>
+                                    <label className="form-label"></label>
+                                    <input
+                                        type="text"
+                                        placeholder="Ingrese el ID del Cliente"
+                                        name="idcliente"
+                                        className="form-control"
+                                        value={cedulaCliente}
+                                        //onChange={(e) => setCedulaCliente(e.target.value)}
+                                    />
+                                </div>
+
+                                <div className='radio-option'>
+                                    <input
+                                        type="radio"
+                                        name="tipopago"
+                                        value="tarjeta"
+                                        checked={tipo_pago === true}
+                                        //onChange={(e) => setTipoPago(e.target.value === "true")}
+                                    />
+                                    <label htmlFor="Tarjeta">Tarjeta</label>
+                                </div>
+                                <div className='radio-option'>
+                                    <input
+                                        type="radio"
+                                        name="tipopago"
+                                        value="efectivo"
+                                        checked={tipo_pago === false}
+                                        //onChange={(e) => setTipoPago(e.target.value === "true")}
+                                    />
+                                    <label htmlFor="Efectivo">Efectivo</label>
+                                </div>
+
+
+                                <div className='form-group mb-2'>
+                                    <label className="form-label">Seleccione Fecha</label>
+                                    <input
+                                        type="date"
+                                        name="fecha"
+                                        className="form-control"
+                                        required
+                                        value={date}
+                                        //onChange={(e) => setDate(e.target.value)}
+                                    />
+                                </div>
+
+
+                                <button className='btn btn-success' onClick={(e) => saveFactura(e)}>Save</button>
+                                &nbsp;&nbsp;
+                                <Link to='/facturas' className='btn btn-danger'>Cancelar</Link>
+                            </form>
 
                         </div>
                     </div>

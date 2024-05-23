@@ -25,6 +25,7 @@ export const ListFacturas = () => {
                     <th>Cliente</th>
                     <th>Tipo_Pago</th>
                     <th>Precio_Final</th>
+                    <th>Generar PDF/XML</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -38,12 +39,13 @@ export const ListFacturas = () => {
                                 <td>{factura.cedulaCliente}</td>
                                 <td>{factura.tipoPago}</td>
                                 <td>{factura.finalPrice}</td>
+                                <td></td>
                             </tr>
                     )
                 }
                 </tbody>
             </table>
-            <Link to="/save-productos">Agregar Factura</Link>
+            <Link to="/save-facturas">Agregar Factura</Link>
         </div>
     );
 }

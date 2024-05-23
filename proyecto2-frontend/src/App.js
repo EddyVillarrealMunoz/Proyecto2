@@ -17,6 +17,8 @@ import IndexComponent from "./Components/IndexComponent";
 import Header from "./Components/Header";
 import Footer from "./Components/Footer";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
+import ListFacturas from "./Components/Factura/ListFactura";
+import CreateFactura from "./Components/Factura/CreateFactura";
 
 function App() {
   return (
@@ -36,6 +38,8 @@ function App() {
                     <Route exact path = '/save-clientes'              element = {< CreateCliente/>}></Route>
                     <Route exact path = '/clientes'                   element = {< ListClientes/>}></Route>
                     <Route exact path = '/profile-proveedor/:id'      element = {< ProfileProveedor/>}></Route>
+                    <Route exact path = '/facturas'                   element=  {< ListFacturas/>}></Route>
+                    <Route exact path = '/save-facturas'              element=  {< CreateFactura/>}></Route>
                 </Routes>
             </div>
             {<Footer/>}
