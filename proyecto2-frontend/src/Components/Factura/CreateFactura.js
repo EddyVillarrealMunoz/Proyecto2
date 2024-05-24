@@ -1,43 +1,59 @@
 import React, { useState, useEffect } from 'react';
 import FacturaService from "../../Services/FacturaService";
 import { Link, useNavigate } from "react-router-dom";
-
 import ProductoService from "../../Services/ProductoService";
 import ClienteService from "../../Services/ClienteService";
-
-// ...
-
 import '../../css/style.css';
 
 export const CreateFactura = () => {
-
-    const[cedulaCliente,setCedulaCliente]=useState('');
-    const[tipoPago,setTipoPago]=useState('');
-    const[date,setDate]=useState('');
-    //const [cantidad,setCantidad]=useState('');
-    const[finalPrice,setFinalPrice]=useState('');
-    const[listFacturasDetalles,setlistFacturasDetalles]=useState('');
-    const[cedulaProveedor,setCedulaProveedor]=useState('');
+    const [cedulaCliente, setCedulaCliente] = useState('');
+    const [tipoPago, setTipoPago] = useState('');
+    const [date, setDate] = useState(new Date());
+    const [finalPrice, setFinalPrice] = useState(0);
+    const [listFacturasDetalles, setListFacturasDetalles] = useState([]);
+    const [cedulaProveedor, setCedulaProveedor] = useState('');
 
     const [productos, setProductos] = useState([]);
     const [clientes, setClientes] = useState([]);
     const [selectedProductos, setSelectedProductos] = useState([]);
     const [productoCantidades, setProductoCantidades] = useState({});
-    const [selectedCliente, setSelectedCliente] = useState(null);
+    const [selectedCliente, setSelectedCliente] = useState([]);
 
-    const tipo_pago = ['tarjeta','efectivo'];
+    const tipo_pago = ['tarjeta', 'efectivo'];
     const navigate = useNavigate();
 
     const saveFactura = async (e) => {
         e.preventDefault();
 
-        if ( !cedulaCliente || !tipoPago || !date) { // Validación de los campos del formulario
+        //Verifica que se seleccionó un cliente, tipo de pago, fecha y que se haya seleccionado un producto/servicio.
+        if (!cedulaCliente || !tipoPago || !date || selectedProductos.length === 0) {
             alert('Por favor, rellena todos los campos');
             return;
         }
 
-        //Se supone que cuando uno selecciona el id del producto, este se agrega a lista de FacturasDetalles junto a su cantidad.
-        const factura = {cedulaCliente, tipoPago, date, finalPrice, listFacturasDetalles, cedulaProveedor };
+        //Es para obtener precio final según el valor de los productos/servicios, el iva y la cantidad.
+        const total = selectedProductos.reduce((sum, producto) => {
+            const cantidad = productoCantidades[producto.id] || 1;
+            const precioConIva = producto.price * (1 + producto.ivaFee / 100);
+            return sum + precioConIva * cantidad;
+            }, 0);
+
+        //Es para obtener los productos/servicios seleccionados y sus cantidades
+        const facturaDetalle = selectedProductos.map((producto) => ({
+            idProducto: producto.id,
+            cantidad: productoCantidades[producto.id] || 1,
+        }));
+
+
+        const factura = {
+            cedulaCliente,
+            tipoPago,
+            date,
+            finalPrice: total,
+            listFacturasDetalles: facturaDetalle,
+            cedulaProveedor  //Hay que obtener el id del proveedor logeado
+        };
+
 
         try {
             const response = await FacturaService.saveFactura(factura);
@@ -47,7 +63,7 @@ export const CreateFactura = () => {
             console.error(error);
             alert('Hubo un error al guardar la factura');
         }
-    }
+    };
 
     useEffect(() => {
         ProductoService.getProductos().then((response) => {
@@ -61,8 +77,13 @@ export const CreateFactura = () => {
         }).catch((error) => {
             console.log(error);
         });
+
     }, []);
 
+    //Para convertir la fecha seleccionada de tipo string a Date.
+    const handleDateChange = (e) => {
+        setDate(new Date(e.target.value));
+    };
 
     return (
         <div>
@@ -74,10 +95,9 @@ export const CreateFactura = () => {
                         </h1>
                         <div className='card-body'>
                             <form>
-
                                 <div className='form-group mb-2'>
                                     <label className="form-label">Producto</label>
-                                    <br/>
+                                    <br />
                                     {productos.length > 0 ? (
                                         <table className="table table-striped">
                                             <thead>
@@ -132,7 +152,7 @@ export const CreateFactura = () => {
 
                                 <div className='form-group mb-2'>
                                     <label className="form-label">Cliente</label>
-                                    <br/>
+                                    <br />
                                     {clientes.length > 0 ? (
                                         <table className="table table-striped">
                                             <thead>
@@ -152,6 +172,7 @@ export const CreateFactura = () => {
                                                                onChange={(e) => {
                                                                    const selectedCli = clientes.find(cli => cli.id === Number(e.target.value));
                                                                    setSelectedCliente(selectedCli);
+                                                                   setCedulaCliente(cliente.id);
                                                                }}
                                                         />
                                                     </td>
@@ -169,8 +190,8 @@ export const CreateFactura = () => {
                                         type="radio"
                                         name="tipopago"
                                         value="tarjeta"
-                                        checked={tipo_pago === true}
-                                        //onChange={(e) => setTipoPago(e.target.value === "true")}
+                                        checked={tipoPago === 'tarjeta'}
+                                        onChange={(e) => setTipoPago(e.target.value)}
                                     />
                                     <label htmlFor="Tarjeta">Tarjeta</label>
                                 </div>
@@ -179,12 +200,11 @@ export const CreateFactura = () => {
                                         type="radio"
                                         name="tipopago"
                                         value="efectivo"
-                                        checked={tipo_pago === false}
-                                        //onChange={(e) => setTipoPago(e.target.value === "true")}
+                                        checked={tipoPago === 'efectivo'}
+                                        onChange={(e) => setTipoPago(e.target.value)}
                                     />
                                     <label htmlFor="Efectivo">Efectivo</label>
                                 </div>
-
 
                                 <div className='form-group mb-2'>
                                     <label className="form-label">Seleccione Fecha</label>
@@ -193,23 +213,21 @@ export const CreateFactura = () => {
                                         name="fecha"
                                         className="form-control"
                                         required
-                                        value={date}
-                                        //onChange={(e) => setDate(e.target.value)}
+                                        value={date.toISOString().substr(0, 10)}
+                                        onChange={handleDateChange}
                                     />
                                 </div>
-
 
                                 <button className='btn btn-success' onClick={(e) => saveFactura(e)}>Save</button>
                                 &nbsp;&nbsp;
                                 <Link to='/facturas' className='btn btn-danger'>Cancelar</Link>
                             </form>
-
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
 export default CreateFactura;
