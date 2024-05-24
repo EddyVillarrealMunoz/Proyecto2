@@ -12,6 +12,7 @@ import ListClientes from "./Components/Cliente/ListCliente";
 import CreateCliente from "./Components/Cliente/CreateCliente";
 
 import Login from "./Components/Login";
+import Logout from "./Components/Logout";
 
 import IndexComponent from "./Components/IndexComponent";
 import Header from "./Components/Header";
@@ -29,6 +30,7 @@ function App() {
                 <Routes>
                     <Route exact path = '/'                           element = {< IndexComponent />}> </Route>
                     <Route exact path = '/login'                      element = {< Login />}> </Route>
+                    <Route exact path = '/logout'                     element = {< Logout />}> </Route>
                     <Route exact path = '/save-proveedor'             element = {< CreateProveedor/>}></Route>
                     <Route exact path = '/update-proveedor/:idUpdate' element = {< CreateProveedor/>}></Route>
                     <Route exact path = '/proveedor-profile/'         element = {< ProfileProveedor/>}></Route>
