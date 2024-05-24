@@ -12,8 +12,8 @@ class ClienteService {
         return axios.get(`${CLIENTE_BASE_REST_API_URL}/proveedor/${proveedorId}`);
     }
 
-    saveCliente(cliente) {
-        return axios.post(CLIENTE_BASE_REST_API_URL, cliente);
+    saveCliente(cliente, proveedorId) {
+        return axios.post(`${CLIENTE_BASE_REST_API_URL}?proveedorId=${proveedorId}`, cliente);
     }
 
     getClienteById(idP) {

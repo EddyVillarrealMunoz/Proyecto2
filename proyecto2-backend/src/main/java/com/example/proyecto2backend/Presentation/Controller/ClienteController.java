@@ -31,7 +31,10 @@ public class ClienteController {
     }
 
     @PostMapping("/clientes")
-    public Cliente saveCliente(@RequestBody Cliente cliente) {
+    public Cliente saveCliente(@RequestBody Cliente cliente, @RequestParam String proveedorId) {
+
+        System.out.println("ClienteController Linea 35"); //debo terminar lógica de asignación de proveedor a cliente
+
         return clienteRepository.save(cliente);
     }
 

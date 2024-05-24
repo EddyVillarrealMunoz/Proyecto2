@@ -15,6 +15,8 @@ export const CreateCliente = () => {
     let [telefono, setTelefono] = useState('');
     const [email, setEmail] = useState('');
 
+    const proveedorId = localStorage.getItem('proveedorId');
+
     const navigate = useNavigate();
     const {idP} = useParams();
     const isDisabled = Boolean(idP);
@@ -38,12 +40,6 @@ export const CreateCliente = () => {
     const saveCliente = async (e) => {
         e.preventDefault();
 
-        /*
-        if (!id || !tipoCliente || !name || !direccion || !telefono || !email) { // Validación de los campos del formulario
-            alert('Por favor, rellena todos los campos');
-            return;
-        }
-        */
         if (validateForm()) {
             telefono = telefono.replace(/-/g, '');
             id = id.replace(/-/g, '');
@@ -52,7 +48,7 @@ export const CreateCliente = () => {
             console.log(cliente);
 
             try {
-                const response = await ClienteService.saveCliente(cliente);
+                const response = await ClienteService.saveCliente(cliente, proveedorId);
                 console.log(response.data);
                 navigate('/clientes');
             } catch (error) {
