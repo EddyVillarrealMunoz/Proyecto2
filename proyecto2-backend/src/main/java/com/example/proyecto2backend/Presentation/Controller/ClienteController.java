@@ -35,7 +35,6 @@ public class ClienteController {
         Proveedor proveedor = proveedorRepository.findById(proveedorId)
                 .orElseThrow(() -> new ResourceNotFoundException("Proveedor not found with id: " + proveedorId));
 
-
         proveedor.getClientes().add(cliente); // Agregar el cliente a la lista de clientes del proveedor
         proveedorRepository.save(proveedor); // Guardar el proveedor, lo que también guardará el cliente debido a la relación CascadeType.ALL
 

@@ -1,9 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import FacturaService from "../../Services/FacturaService";
+import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom'
+import Alert from 'react-bootstrap/Alert';
 
 export const ListFacturas = () => {
     const [facturas, setFacturas] = useState([]);
+    const navigate = useNavigate();
+
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
+
+    useEffect(() =>
+    {
+        // Obtener la información del usuario y id del proveedor que ha ingresado a este componente
+        const user = JSON.parse(localStorage.getItem('user'));
+        const proveedorId = localStorage.getItem('proveedorId');
+
+        // Verificar si el usuario ha iniciado sesión
+        if (!user) {
+            alert('Debe iniciar sesión para acceder a esta página');
+            navigate('/login');
+            return;
+        }
+
+        // Verificar si el usuario es un proveedor
+        if (user.rol !== 'PRO') {
+            alert('Permisos denegados');
+            navigate('/login');
+            return;
+        }
+
+    }, []);
 
     useEffect(() => {
         FacturaService.getFacturas().then((response) => {
