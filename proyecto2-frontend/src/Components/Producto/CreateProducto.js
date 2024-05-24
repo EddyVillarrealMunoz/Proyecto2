@@ -18,7 +18,7 @@ export const CreateProducto = ({mode}) => {
     const measures = ['Kilogramos', 'Litros', 'Centímetros', 'Unidades','Paquetes', 'Horas']; // Las medidas disponibles
 
     const navigate = useNavigate();
-    const {id} = useParams(); // Se agrega únicamente para el caso de actualización de un producto
+    const {id} = useParams();
     const isDisabled = mode === 'view';
 
     const [errors, setErrors] = useState({
