@@ -32,8 +32,10 @@ public class ClienteController {
 
     @PostMapping("/clientes")
     public Cliente saveCliente(@RequestBody Cliente cliente, @RequestParam String proveedorId) {
+        Proveedor proveedor = proveedorRepository.findById(proveedorId)
+                .orElseThrow(() -> new ResourceNotFoundException("Proveedor not found with id: " + proveedorId));
 
-        System.out.println("ClienteController Linea 35"); //debo terminar lógica de asignación de proveedor a cliente
+        System.out.println("ClienteController Linea 38"); //debo terminar lógica de asignación de proveedor a cliente
 
         return clienteRepository.save(cliente);
     }

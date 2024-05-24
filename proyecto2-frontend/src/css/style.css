@@ -273,3 +273,15 @@ input[type="submit"]:hover, input[type="date"]:hover, input[type="radio"]:hover 
 .input-cantidad {
     width: 50px;
 }
+
+.btn-register {
+    color: #fff;
+    border-color: #0d6efd;
+    background-color: #0d6efd;
+}
+
+.btn-register:hover {
+    color: #fff;
+    background-color: var(--color2);
+    border-color: #0d6efd;
+}

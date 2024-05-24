@@ -13,11 +13,8 @@ export const Login = () => {
 
         try {
             const response = await axios.post('http://localhost:8080/api/v1/login', { id, password });
-            console.log("Id y password:" + id,password)
             const user = response.data;
-            console.log("User" + user)
 
-            // Almacenar la información del usuario y el id del proveedor en el almacenamiento local
             localStorage.setItem('user', JSON.stringify(user));
             localStorage.setItem('proveedorId', id);
 
@@ -32,19 +29,30 @@ export const Login = () => {
     };
 
     return (
-        <div>
-            <form onSubmit={handleSubmit}>
-                <label>
-                    ID:
-                    <input type="text" value={id} onChange={e => setId(e.target.value)} />
-                </label>
-                <label>
-                    Contraseña:
-                    <input type="password" value={password} onChange={e => setPassword(e.target.value)} />
-                </label>
-                <input type="submit" value="Iniciar sesión" />
-            </form>
-            <Link to="/save-proveedor">Registrarse</Link>
+        <div className="container">
+            <div className="row justify-content-center">
+                <div className="col-md-6">
+                    <div className="card p-4">
+                        <form onSubmit={handleSubmit}>
+                            <h1 className="card-title text-center">Iniciar sesión</h1>
+                            <div className="mb-3">
+                                <label className="form-label">ID:</label>
+                                <input type="text" className="form-control" value={id} onChange={e => setId(e.target.value)} />
+                            </div>
+                            <div className="mb-3">
+                                <label className="form-label">Contraseña:</label>
+                                <input type="password" className="form-control" value={password} onChange={e => setPassword(e.target.value)} />
+                            </div>
+                            <div className="d-grid gap-2">
+                                <input type="submit" className="btn btn-primary" value="Iniciar sesión" />
+                            </div>
+                        </form>
+                        <div className="text-center mt-3">
+                            <Link to="/save-proveedor" className="btn btn-register">Registrarse</Link>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };
