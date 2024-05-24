@@ -27,11 +27,9 @@ export const ListProductos = () => {
     function addProducto() {
         navigator("/save-productos");
     }
-
     function viewProducto(id) {
         navigator(`/productos/view/${id}`);
     }
-
     function removeProducto(id) {
         console.log("Eliminar producto con id: ", id);
 
@@ -70,11 +68,11 @@ export const ListProductos = () => {
                             <td>{producto.type ? "Producto" : "Servicio"}</td>
                             <td>{producto.description}</td>
                             <td>{producto.measure}</td>
-                            <td>{producto.price}</td>
-                            <td>{producto.ivaFee}</td>
+                            <td>₡{producto.price.toLocaleString('es-CR')}</td>
+                            <td>{producto.ivaFee}%</td>
                             <td>
-                                <Link className='btn btn-info' to={`/update-producto/${producto.id}`}>Editar</Link>
-                                <div className={"text-center"}>
+                            <div className={"text-center"}>
+                                    <Link className='btn btn-warning m-1' to={`/update-producto/${producto.id}`}>Editar</Link>
                                     <button className="btn btn-info m-1" onClick={() => viewProducto(producto.id)}>Ver
                                     </button>
                                     <button className="btn btn-danger m-1"
