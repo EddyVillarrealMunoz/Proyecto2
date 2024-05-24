@@ -5,7 +5,7 @@ import { NumericFormat } from 'react-number-format';
 
 import '../../css/style.css';
 
-export const CreateProducto = () => {
+export const CreateProducto = ({mode}) => {
 
     //------------------------------------------------------------------------------------------------------------------
     // CONSTANTES
@@ -15,11 +15,11 @@ export const CreateProducto = () => {
     const [price, setPrice] = useState('');
     const [type, setType] = useState('');
     const [ivaFee, setIvaFee] = useState('');
-    const measures = ['Kilogramos', 'Litros', 'Centímetros', 'Unidades']; // Las medidas disponibles
+    const measures = ['Kilogramos', 'Litros', 'Centímetros', 'Unidades','Paquetes', 'Horas']; // Las medidas disponibles
 
     const navigate = useNavigate();
     const {id} = useParams(); // Se agrega únicamente para el caso de actualización de un producto
-    const isDisabled = Boolean(id);
+    const isDisabled = mode === 'view';
 
     const [errors, setErrors] = useState({
         description: '',
@@ -85,14 +85,17 @@ export const CreateProducto = () => {
     // FUNCIONES
     //------------------------------------------------------------------------------------------------------------------
     function title() {
-        if (id) {
+        if (id && mode === 'edit') {
             return <h1 className={"text-center card-header"}>Editar Producto/Servicio</h1>;
+        }
+        if (id && mode === 'view') {
+            return <h1 className={"text-center card-header"}>Ver Producto/Servicio</h1>;
         }
         return <h1 className={"text-center card-header"}>Agregar Producto/Servicio</h1>;
     }
 
     function mostrarBotonGuardar() {
-        if (id) {
+        if (id && mode === 'view'){
             return null;
         } else {
             return <button className={"btn btn-primary me-2"}

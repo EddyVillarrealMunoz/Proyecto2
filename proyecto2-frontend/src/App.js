@@ -36,7 +36,8 @@ function App() {
 
                     <Route exact path = '/save-productos'             element = {< CreateProducto/>}></Route>
                     <Route exact path = '/productos'                  element = {< ListProductos/>}></Route>
-                    <Route exact path = '/productos/view/:id'         element = {< CreateProducto/>}></Route>
+                    <Route exact path = '/productos/view/:id'         element = {< CreateProducto mode={"view"}/>}></Route>
+                    <Route exact path = '/update-producto/:id'        element = {< CreateProducto mode={"edit"}/>}></Route>
 
 
                     <Route exact path = '/save-clientes'              element = {< CreateCliente/>}></Route>
@@ -46,7 +47,6 @@ function App() {
                     <Route exact path = '/profile-proveedor/:id'      element = {< ProfileProveedor/>}></Route>
                     <Route exact path = '/facturas'                   element=  {< ListFacturas/>}></Route>
                     <Route exact path = '/save-facturas'              element=  {< CreateFactura/>}></Route>
-                    <Route exact path = '/update-producto/:id'        element = {< CreateProducto/>}></Route>
                 </Routes>
             </div>
             {<Footer/>}
