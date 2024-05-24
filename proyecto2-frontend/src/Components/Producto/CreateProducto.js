@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import ProductoService from "../../Services/ProductoService";
 import {Link, useNavigate, useParams} from "react-router-dom";
+import { NumericFormat } from 'react-number-format';
 
 import '../../css/style.css';
 
@@ -215,26 +216,25 @@ export const CreateProducto = () => {
                                 {errors.measure && <div className={"invalid-feedback"}>{errors.measure}</div>}
                             </div>
                             <div className={"mb-3"}>
-                                <input
+                                <NumericFormat
                                     disabled={isDisabled}
-                                    type="number"
-                                    placeholder="Digite precio "
-                                    name="price"
-                                    className={`form-control ${errors.price ? 'is-invalid' : ''}`}
                                     value={price}
-                                    onChange={(e) => setPrice(e.target.value)}
+                                    onValueChange={(values) => setPrice(values.value)}
+                                    thousandSeparator={true}
+                                    prefix={'₡'}
+                                    placeholder="Digite precio"
+                                    className={`form-control ${errors.price ? 'is-invalid' : ''}`}
                                 />
                                 {errors.price && <div className={"invalid-feedback"}>{errors.price}</div>}
                             </div>
-                            <div className='form-group mb-2'>
-                                <input
+                            <div className='form-group mb-3'>
+                                <NumericFormat
                                     disabled={isDisabled}
-                                    type="number"
-                                    placeholder="Digite IVA "
-                                    name="ivaFee"
-                                    className={`form-control ${errors.ivaFee ? 'is-invalid' : ''}`}
                                     value={ivaFee}
-                                    onChange={(e) => setIvaFee(e.target.value)}
+                                    onValueChange={(values) => setIvaFee(values.value)}
+                                    suffix={'%'}
+                                    placeholder="Digite IVA"
+                                    className={`form-control ${errors.ivaFee ? 'is-invalid' : ''}`}
                                 />
                                 {errors.ivaFee && <div className={"invalid-feedback"}>{errors.ivaFee}</div>}
                             </div>
