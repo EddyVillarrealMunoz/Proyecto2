@@ -8,6 +8,10 @@ class ClienteService {
         return axios.get(CLIENTE_BASE_REST_API_URL);
     }
 
+    getClientesByProveedor(proveedorId) {
+        return axios.get(`${CLIENTE_BASE_REST_API_URL}/proveedor/${proveedorId}`);
+    }
+
     saveCliente(cliente) {
         return axios.post(CLIENTE_BASE_REST_API_URL, cliente);
     }

@@ -1,5 +1,7 @@
 package com.example.proyecto2backend.Presentation.Controller;
 
+import com.example.proyecto2backend.Data.Repository.ProveedorRepository;
+import com.example.proyecto2backend.Logic.Model.Proveedor;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import com.example.proyecto2backend.Data.Repository.ClienteRepository;
 import com.example.proyecto2backend.Exception.ResourceNotFoundException;
@@ -20,6 +22,9 @@ public class ClienteController {
     @Autowired
     private ClienteRepository clienteRepository;
 
+    @Autowired
+    private ProveedorRepository proveedorRepository;
+
     @GetMapping("/clientes")
     public List<Cliente> findAllClientes() {
         return clienteRepository.findAll();
@@ -28,6 +33,13 @@ public class ClienteController {
     @PostMapping("/clientes")
     public Cliente saveCliente(@RequestBody Cliente cliente) {
         return clienteRepository.save(cliente);
+    }
+
+    @GetMapping("/clientes/proveedor/{proveedorId}")
+    public List<Cliente> findClientesByProveedor(@PathVariable String proveedorId) {
+        Proveedor proveedor = proveedorRepository.findById(proveedorId)
+                .orElseThrow(() -> new ResourceNotFoundException("Proveedor not found with id: " + proveedorId));
+        return proveedor.getClientes();
     }
 
     @GetMapping("/clientes/{id}")
