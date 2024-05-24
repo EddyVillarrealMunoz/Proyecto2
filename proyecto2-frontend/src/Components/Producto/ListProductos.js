@@ -1,11 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import ProductoService from "../../Services/ProductoService";
-import { Link } from 'react-router-dom';
-
+import {Link, useNavigate} from 'react-router-dom';
 
 export const ListProductos = () => {
-    const [productos, setProductos] = useState([]);
 
+    //------------------------------------------------------------------------------------------------------------------
+    // CONSTANTES
+    //------------------------------------------------------------------------------------------------------------------
+    const [productos, setProductos] = useState([]);
+    const navigator = useNavigate();
+
+    //------------------------------------------------------------------------------------------------------------------
+    // Obtener los productos
+    //------------------------------------------------------------------------------------------------------------------
     useEffect(() => {
         ProductoService.getProductos().then((response) => {
             setProductos(response.data);
@@ -14,38 +21,72 @@ export const ListProductos = () => {
         });
     }, []);
 
+    //------------------------------------------------------------------------------------------------------------------
+    // FUNCIONES
+    //------------------------------------------------------------------------------------------------------------------
+    function addProducto() {
+        navigator("/save-productos");
+    }
+
+    function viewProducto(id) {
+        navigator(`/productos/view/${id}`);
+    }
+
+    function removeProducto(id) {
+        console.log("Eliminar producto con id: ", id);
+
+        ProductoService.deleteProducto(id).then(() => {
+            ProductoService.getProductos().then((response) => {
+                setProductos(response.data);
+            }).catch((error) => {
+                console.log(error);
+            });
+        }).catch((error) => {
+            console.log(error);
+        });
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    // RENDERIZADO
+    //------------------------------------------------------------------------------------------------------------------
     return (
         <div className='tabla-productos'>
             <h2>Productos</h2>
+            <button className="btn btn-primary mb-1 float-end" onClick={addProducto}>Nuevo Produto</button>
             <table>
                 <thead>
-                <tr>
-                    <th>Tipo</th>
-                    <th>Descripción</th>
-                    <th>Medida</th>
-                    <th>Precio</th>
-                    <th>IVA</th>
-                    <th>Editar</th>
-
-                </tr>
+                    <tr className={"text-center"}>
+                        <th>Tipo</th>
+                        <th>Descripción</th>
+                        <th>Medida</th>
+                        <th>Precio</th>
+                        <th>IVA</th>
+                        <th>Accion</th>
+                    </tr>
                 </thead>
                 <tbody>
-                {
-                    productos.map(
-                        producto =>
-                            <tr key={producto.id}>
-                                <td>{producto.type ? "Producto" : "Servicio"}</td>
-                                <td>{producto.description}</td>
-                                <td>{producto.measure}</td>
-                                <td>{producto.price}</td>
-                                <td>{producto.ivaFee}</td>
-                                <Link className= 'btn btn-info' to={`/update-producto/${producto.id}`}>Editar</Link>
-                            </tr>
+                    {productos.map(producto =>
+                        <tr key={producto.id}>
+                            <td>{producto.type ? "Producto" : "Servicio"}</td>
+                            <td>{producto.description}</td>
+                            <td>{producto.measure}</td>
+                            <td>{producto.price}</td>
+                            <td>{producto.ivaFee}</td>
+                            <td>
+                                <Link className='btn btn-info' to={`/update-producto/${producto.id}`}>Editar</Link>
+                                <div className={"text-center"}>
+                                    <button className="btn btn-info m-1" onClick={() => viewProducto(producto.id)}>Ver
+                                    </button>
+                                    <button className="btn btn-danger m-1"
+                                            onClick={() => removeProducto(producto.id)}>Eliminar
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
                     )
-                }
+                    }
                 </tbody>
             </table>
-            <Link to="/save-productos">Agregar Productos</Link>
         </div>
     );
 }

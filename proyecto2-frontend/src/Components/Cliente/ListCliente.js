@@ -59,8 +59,6 @@ export const ListClientes = () => {
         console.log("Eliminar cliente con id: ", id);
 
         ClienteService.deleteCliente(id).then(() => {
-            console.log("Cliente eliminado con éxito")
-            console.log("Actualizando lista de clientes")
             ClienteService.getClientes().then((response) => {
                 setClientes(response.data);
             }).catch((error) => {
@@ -100,7 +98,7 @@ export const ListClientes = () => {
             <button className="btn btn-primary mb-1 float-end" onClick={addCliente}>Nuevo Cliente</button>
             <table>
                 <thead>
-                    <tr>
+                    <tr className={"text-center"}>
                         <th>Cedula</th>
                         <th>Tipo Cliente</th>
                         <th>Nombre</th>

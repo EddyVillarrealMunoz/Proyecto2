@@ -30,6 +30,7 @@ public class ProductoController {
         return productoRepository.save(producto);
     }
 
+    @GetMapping("/productos/{id}")
     public ResponseEntity<Producto> findProductoById(@PathVariable Integer id) {
         Producto producto = productoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Producto not found with id: " + id));

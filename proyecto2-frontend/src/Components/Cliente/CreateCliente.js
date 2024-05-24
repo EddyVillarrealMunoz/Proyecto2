@@ -90,7 +90,7 @@ export const CreateCliente = () => {
         if (idP) {
             return null;
         } else {
-            return <button className='btn btn-success' onClick={(e) => saveCliente(e)}>Save</button>
+            return <button className='btn btn-success' onClick={(e) => saveCliente(e)}>Guardar</button>
         }
     }
 
@@ -247,7 +247,7 @@ export const CreateCliente = () => {
                             </div>
                             {mostrarBotonGuardar()}
                             &nbsp;&nbsp;
-                            <Link to='/clientes' className='btn btn-danger'>Volver</Link>
+                            <Link to='/clientes' className='btn btn-secondary'>Volver</Link>
                         </form>
                     </div>
                 </div>

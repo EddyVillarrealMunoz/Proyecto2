@@ -33,11 +33,14 @@ function App() {
                     <Route exact path = '/update-proveedor/:idUpdate' element = {< CreateProveedor/>}></Route>
                     <Route exact path = '/proveedor-profile/'         element = {< ProfileProveedor/>}></Route>
                     <Route exact path = '/admin-profile/'             element = {< AdminProfile/>}></Route>
+
                     <Route exact path = '/save-productos'             element = {< CreateProducto/>}></Route>
                     <Route exact path = '/productos'                  element = {< ListProductos/>}></Route>
+                    <Route exact path = '/productos/view/:id'         element = {< CreateProducto/>}></Route>
+
 
                     <Route exact path = '/save-clientes'              element = {< CreateCliente/>}></Route>
-                    <Route exact path = '/clientes/view/:idP'          element = {< CreateCliente/>}></Route>
+                    <Route exact path = '/clientes/view/:idP'         element = {< CreateCliente/>}></Route>
                     <Route exact path = '/clientes'                   element = {< ListClientes/>}></Route>
 
                     <Route exact path = '/profile-proveedor/:id'      element = {< ProfileProveedor/>}></Route>
