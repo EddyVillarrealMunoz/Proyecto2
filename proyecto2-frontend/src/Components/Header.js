@@ -14,7 +14,7 @@ export const Header = () => {
                     <a href="/facturas">Facturas</a>
                     <a href="/productos">Productos</a>
                     <a href="/clientes">Clientes</a>
-                    <a href="/">Salir</a>
+                    <a href="/logout">Salir</a>
                 </nav>
             </header>
         </div>

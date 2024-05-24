@@ -9,6 +9,8 @@ export const Logout = () => {
         localStorage.removeItem('user');
         localStorage.removeItem('proveedorId');
 
+        console.log("Usuario: ", localStorage.getItem('user'));
+
         // Redirigir al usuario a la página de inicio de sesión
         navigate('/');
     }, [navigate]);

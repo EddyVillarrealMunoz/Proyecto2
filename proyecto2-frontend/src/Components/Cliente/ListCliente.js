@@ -19,7 +19,12 @@ export const ListClientes = () => {
         const user = JSON.parse(localStorage.getItem('user'));
         const proveedorId = localStorage.getItem('proveedorId');
 
+        console.log("usuario: " + user);
+
         // Verificar si el usuario ha iniciado sesión
+
+        console.log("Usuario: ", user);
+
         if (!user) {
             alert('Debe iniciar sesión para acceder a esta página');
             navigator('/login');
@@ -32,8 +37,6 @@ export const ListClientes = () => {
             navigator('/login');
             return;
         }
-
-        console.log(`El proveedor con id ${proveedorId} ha ingresado`);
 
         ClienteService.getClientes().then((response) => {
             setClientes(response.data);
