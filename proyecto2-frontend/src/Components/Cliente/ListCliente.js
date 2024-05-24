@@ -13,8 +13,7 @@ export const ListClientes = () => {
     //------------------------------------------------------------------------------------------------------------------
     // Validar credenciales / Obtener data
     //------------------------------------------------------------------------------------------------------------------
-    useEffect(() =>
-    {
+    useEffect(() => {
         // Obtener la información del usuario y id del proveedor que ha ingresado a este componente
         const user = JSON.parse(localStorage.getItem('user'));
         const proveedorId = localStorage.getItem('proveedorId');
@@ -94,7 +93,8 @@ export const ListClientes = () => {
     //------------------------------------------------------------------------------------------------------------------
     return (
         <div className='tabla-Cliente'>
-            <h2>Clientes</h2>
+            <br/>
+            <h1>Clientes</h1>
             <button className="btn btn-primary mb-1 float-end" onClick={addCliente}>Nuevo Cliente</button>
             <table>
                 <thead>
@@ -110,24 +110,25 @@ export const ListClientes = () => {
                 </thead>
                 <tbody>
                     {
-                        clientes.map(
-                            cliente =>
-                                <tr key={cliente.id}>
-                                    <td>{formatoCedula(cliente.tipoCliente, cliente.id)}</td>
-                                    <td>{cliente.tipoCliente ? "Físico" : "Jurídico"}</td>
-                                    <td>{cliente.name}</td>
-                                    <td>{cliente.direccion}</td>
-                                    <td>{formatoTelefono(cliente.telefono)}</td>
-                                    <td>{cliente.email}</td>
-                                    <td>
-                                        <div className={"text-center"}>
-                                            <button className="btn btn-info m-1" onClick={() => viewCliente(cliente.id)}>Ver</button>
-                                            <button className="btn btn-danger m-1"
-                                                    onClick={() => removeCliente(cliente.id)}>Eliminar
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
+                        clientes.map(cliente =>
+                            <tr key={cliente.id}>
+                                <td>{formatoCedula(cliente.tipoCliente, cliente.id)}</td>
+                                <td>{cliente.tipoCliente ? "Físico" : "Jurídico"}</td>
+                                <td>{cliente.name}</td>
+                                <td>{cliente.direccion}</td>
+                                <td>{formatoTelefono(cliente.telefono)}</td>
+                                <td>{cliente.email}</td>
+                                <td>
+                                    <div className={"text-center"}>
+                                        <button className="btn btn-info m-1"
+                                                onClick={() => viewCliente(cliente.id)}>Ver
+                                        </button>
+                                        <button className="btn btn-danger m-1"
+                                                onClick={() => removeCliente(cliente.id)}>Eliminar
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
                         )
                     }
                 </tbody>
