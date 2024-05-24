@@ -1,18 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import FacturaService from "../../Services/FacturaService";
-import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom'
-import Alert from 'react-bootstrap/Alert';
+import {useNavigate} from 'react-router-dom';
 
 export const ListFacturas = () => {
+    //------------------------------------------------------------------------------------------------------------------
+    // CONSTANTES
+    //------------------------------------------------------------------------------------------------------------------
     const [facturas, setFacturas] = useState([]);
     const navigate = useNavigate();
 
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
 
-    useEffect(() =>
-    {
+    //------------------------------------------------------------------------------------------------------------------
+    // Validar credenciales / Obtener data
+    //------------------------------------------------------------------------------------------------------------------
+    useEffect(() => {
         // Obtener la información del usuario y id del proveedor que ha ingresado a este componente
         const user = JSON.parse(localStorage.getItem('user'));
         const proveedorId = localStorage.getItem('proveedorId');
@@ -41,39 +44,62 @@ export const ListFacturas = () => {
         });
     }, []);
 
+    //------------------------------------------------------------------------------------------------------------------
+    // FUNCIONES
+    //------------------------------------------------------------------------------------------------------------------
+    function addFactura() {
+        console.log("Agregar Factura");
+        navigate("/save-facturas");
+    }
+
+    function viewFactura(id) {
+        console.log("Ver factura con id: ", id);
+        navigate(`/facturas/view/${id}`);
+    }
+
+
+    //------------------------------------------------------------------------------------------------------------------
+    // RENDERIZADO
+    //------------------------------------------------------------------------------------------------------------------
     return (
         <div className='tabla-productos'>
-            <h2>Facturas</h2>
+            <br/>
+            <h1>Facturas</h1>
+            <button className="btn btn-primary mb-1 float-end" onClick={addFactura}>Nuevo Factura</button>
             <table>
                 <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Fecha</th>
-                    <th>Proveedor</th>
-                    <th>Cliente</th>
-                    <th>Tipo_Pago</th>
-                    <th>Precio_Final</th>
-                    <th>Generar PDF/XML</th>
-                </tr>
+                    <tr className={"text-center"}>
+                        <th>ID</th>
+                        <th>Fecha</th>
+                        <th>Proveedor</th>
+                        <th>Cliente</th>
+                        <th>Tipo_Pago</th>
+                        <th>Precio_Final</th>
+                        <th>Generar PDF/XML</th>
+                    </tr>
                 </thead>
                 <tbody>
-                {
-                    facturas.map(
-                        factura =>
+                    {
+                        facturas.map(factura =>
                             <tr key={factura.id}>
                                 <td>{factura.id}</td>
                                 <td>{factura.date}</td>
                                 <td>{factura.cedulaProveedor}</td>
                                 <td>{factura.cedulaCliente}</td>
                                 <td>{factura.tipoPago}</td>
-                                <td>{factura.finalPrice}</td>
-                                <td></td>
+                                <td>₡{factura.finalPrice.toLocaleString('es-CR')}</td>
+                                <td>
+                                    <div className={"text-center"}>
+                                        <button className="btn btn-info m-1"
+                                                onClick={() => viewFactura(factura.id)}>Ver
+                                        </button>
+                                    </div>
+                                </td>
                             </tr>
-                    )
-                }
+                        )
+                    }
                 </tbody>
             </table>
-            <Link to="/save-facturas">Agregar Factura</Link>
         </div>
     );
 }
