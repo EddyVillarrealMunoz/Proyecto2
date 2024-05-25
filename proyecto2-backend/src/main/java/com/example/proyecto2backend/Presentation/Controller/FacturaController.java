@@ -1,14 +1,18 @@
 package com.example.proyecto2backend.Presentation.Controller;
 
+import com.example.proyecto2backend.Data.Repository.FacturaDetalleRepository;
 import com.example.proyecto2backend.Data.Repository.FacturaRepository;
 import com.example.proyecto2backend.Data.Repository.ProductoRepository;
 import com.example.proyecto2backend.Logic.Model.FacturaDetalle;
 import com.example.proyecto2backend.Logic.Model.Producto;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
+import jdk.swing.interop.SwingInterOpUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import com.example.proyecto2backend.Data.Repository.ClienteRepository;
 import com.example.proyecto2backend.Exception.ResourceNotFoundException;
@@ -26,15 +30,29 @@ public class FacturaController {
     @Autowired
     private FacturaRepository facturaRepository;
 
+    @Autowired
+    private FacturaDetalleRepository facturaDetalleRepository;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @GetMapping("/facturas")
     public List<Factura> findAllFacturas() {
         return facturaRepository.findAll();
     }
 
     @PostMapping("/facturas")
-    public Factura saveFactura(@RequestBody Factura factura) {
-        factura.getListFacturasDetalles().forEach(detalle -> detalle.setFactura(factura));
-        return facturaRepository.save(factura);
+    public Factura saveFactura(@RequestBody Map<String, Object> body) {
+
+        Factura factura = objectMapper.convertValue(body.get("factura"), Factura.class);
+        List<FacturaDetalle> listFacturaDetalles = objectMapper.convertValue(body.get("listFacturaDetalles"), new TypeReference<List<FacturaDetalle>>() {});
+        // Guarda la factura sin los detalles
+        Factura savedFactura = facturaRepository.save(factura);
+
+        System.out.println(listFacturaDetalles);
+
+        // Recarga la factura desde la base de datos para obtener los detalles actualizados
+        return facturaRepository.findById(savedFactura.getId()).get();
     }
 
     @GetMapping("/facturas/{id}")
@@ -55,7 +73,7 @@ public class FacturaController {
         facturaUpdate.setCedulaCliente(factura.getCedulaCliente());
         facturaUpdate.setTipoPago(factura.getTipoPago());
         facturaUpdate.setFinalPrice(factura.getFinalPrice());
-        facturaUpdate.setListFacturasDetalles(factura.getListFacturasDetalles());
+        //facturaUpdate.setListFacturasDetalles(factura.getListFacturasDetalles());
 
         Factura updatedFactura = facturaRepository.save(facturaUpdate);
         return ResponseEntity.ok(updatedFactura);

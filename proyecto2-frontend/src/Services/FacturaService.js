@@ -8,8 +8,9 @@ class FacturaService {
         return axios.get(FACTURA_BASE_REST_API_URL);
     }
 
-    saveFactura(factura) {
-        return axios.post(FACTURA_BASE_REST_API_URL, factura);
+    // En FacturaService.js
+    saveFactura(factura, listFacturaDetalles) {
+        return axios.post(FACTURA_BASE_REST_API_URL, { factura, listFacturaDetalles });
     }
 
     getFacturaById(facturaId) {
@@ -26,3 +27,5 @@ class FacturaService {
 }
 
 export default new FacturaService;
+
+//console.log(JSON.stringify(factura, null, 2));
