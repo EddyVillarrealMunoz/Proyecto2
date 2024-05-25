@@ -46,9 +46,11 @@ function App() {
                     <Route exact path = '/clientes/view/:idP'         element = {< CreateCliente/>}></Route>
                     <Route exact path = '/clientes'                   element = {< ListClientes/>}></Route>
 
-                    <Route exact path = '/profile-proveedor/:id'      element = {< ProfileProveedor/>}></Route>
                     <Route exact path = '/facturas'                   element=  {< ListFacturas/>}></Route>
+                    <Route exact path = '/facturas/view/:id'          element=  {< CreateFactura/>}></Route>
                     <Route exact path = '/save-facturas'              element=  {< CreateFactura/>}></Route>
+
+                    <Route exact path = '/profile-proveedor/:id'      element = {< ProfileProveedor/>}></Route>
                 </Routes>
             </div>
             {<Footer/>}

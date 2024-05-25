@@ -37,6 +37,7 @@ public class FacturaController {
         return facturaRepository.save(factura);
     }
 
+    @GetMapping("/facturas/{id}")
     public ResponseEntity<Factura> findFacturaById(@PathVariable Long id) {
         Factura factura = facturaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Factura not found with id: " + id));

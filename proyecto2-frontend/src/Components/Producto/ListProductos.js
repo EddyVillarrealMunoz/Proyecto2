@@ -49,7 +49,8 @@ export const ListProductos = () => {
     //------------------------------------------------------------------------------------------------------------------
     return (
         <div className='tabla-productos'>
-            <h2>Productos</h2>
+            <br/>
+            <h1>Productos</h1>
             <button className="btn btn-primary mb-1 float-end" onClick={addProducto}>Nuevo Produto</button>
             <table>
                 <thead>
