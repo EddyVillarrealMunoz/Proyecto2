@@ -20,7 +20,7 @@ export const CreateFactura = () => {
     const [productoCantidades, setProductoCantidades] = useState({});
     const [selectedCliente, setSelectedCliente] = useState([]);
 
-    const tipo_pago = ['tarjeta', 'efectivo'];
+    const tipo_pago = ['Tarjeta', 'Efectivo'];
     const navigate = useNavigate();
 
     const fetchData = useCallback(async () => {
@@ -29,7 +29,6 @@ export const CreateFactura = () => {
                 ProductoService.getProductos(),
                 ClienteService.getClientes()
             ]);
-
             setProductos(productosData.data);
             setClientes(clientesData.data);
         } catch (error) {
@@ -55,10 +54,12 @@ export const CreateFactura = () => {
             return sum + precioConIva * cantidad;
         }, 0);
 
-        const facturaDetalle = selectedProductos.map((producto) => ({
-            idProducto: producto.id,
-            cantidad: productoCantidades[producto.id] || 1,
-        }));
+        const facturaDetalle = selectedProductos.map((producto, index) => {
+            return {
+                idProducto: producto.id,
+                cantidad: productoCantidades[producto.id] || 1,
+            };
+        });
 
         const factura = {
             cedulaProveedor,
@@ -66,11 +67,10 @@ export const CreateFactura = () => {
             tipoPago,
             date,
             finalPrice: total,
-            listFacturasDetalles: facturaDetalle,
         };
 
         try {
-            await FacturaService.saveFactura(factura);
+            await FacturaService.saveFactura(factura, facturaDetalle);
             navigate('/facturas');
         } catch (error) {
             console.error(error);
@@ -97,49 +97,49 @@ export const CreateFactura = () => {
                                 <div className="table-responsive">
                                     <table className="table table-striped">
                                         <thead>
-                                            <tr>
-                                                <th>Descripción</th>
-                                                <th>Iva</th>
-                                                <th>Medida</th>
-                                                <th>Precio</th>
-                                                <th>Tipo</th>
-                                                <th>Seleccionar</th>
-                                                <th>Cantidad</th>
-                                            </tr>
+                                        <tr>
+                                            <th>Descripción</th>
+                                            <th>Iva</th>
+                                            <th>Medida</th>
+                                            <th>Precio</th>
+                                            <th>Tipo</th>
+                                            <th>Seleccionar</th>
+                                            <th>Cantidad</th>
+                                        </tr>
                                         </thead>
                                         <tbody>
-                                            {productos.map((producto) => (
-                                                <tr key={producto.id}>
-                                                    <td>{producto.description}</td>
-                                                    <td>{producto.ivaFee}%</td>
-                                                    <td>{producto.measure}</td>
-                                                    <td>₡{producto.price.toLocaleString('es-CR')}</td>
-                                                    <td>{producto.type ? "Producto" : "Servicio"}</td>
-                                                    <td>
-                                                        <input type="checkbox" name="producto" value={producto.id}
-                                                               onChange={(e) => {
-                                                                   if (e.target.checked) {
-                                                                       setSelectedProductos([...selectedProductos, producto]);
-                                                                   } else {
-                                                                       setSelectedProductos(selectedProductos.filter(prod => prod.id !== producto.id));
-                                                                   }
-                                                               }}
-                                                        />
-                                                    </td>
-                                                    <td>
-                                                        <NumericFormat type="number" min="1" name="cantidad"
-                                                                       decimalScale={2}
-                                                                       className="input-cantidad"
-                                                                       onChange={(e) => {
-                                                                           setProductoCantidades({
-                                                                               ...productoCantidades,
-                                                                               [producto.id]: e.target.value
-                                                                           });
-                                                                       }}
-                                                        />
-                                                    </td>
-                                                </tr>
-                                            ))}
+                                        {productos.map((producto) => (
+                                            <tr key={producto.id}>
+                                                <td>{producto.description}</td>
+                                                <td>{producto.ivaFee}%</td>
+                                                <td>{producto.measure}</td>
+                                                <td>₡{producto.price.toLocaleString('es-CR')}</td>
+                                                <td>{producto.type ? "Producto" : "Servicio"}</td>
+                                                <td>
+                                                    <input type="checkbox" name="producto" value={producto.id}
+                                                           onChange={(e) => {
+                                                               if (e.target.checked) {
+                                                                   setSelectedProductos([...selectedProductos, producto]);
+                                                               } else {
+                                                                   setSelectedProductos(selectedProductos.filter(prod => prod.id !== producto.id));
+                                                               }
+                                                           }}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <NumericFormat type="number" min="1" name="cantidad"
+                                                                   decimalScale={2}
+                                                                   className="input-cantidad"
+                                                                   onChange={(e) => {
+                                                                       setProductoCantidades({
+                                                                           ...productoCantidades,
+                                                                           [producto.id]: e.target.value
+                                                                       });
+                                                                   }}
+                                                    />
+                                                </td>
+                                            </tr>
+                                        ))}
                                         </tbody>
                                     </table>
                                 </div>
@@ -154,28 +154,28 @@ export const CreateFactura = () => {
                                 <div className="table-responsive">
                                     <table className="table table-striped">
                                         <thead>
-                                            <tr>
-                                                <th>Nombre</th>
-                                                <th>Email</th>
-                                                <th>Seleccionar</th>
-                                            </tr>
+                                        <tr>
+                                            <th>Nombre</th>
+                                            <th>Email</th>
+                                            <th>Seleccionar</th>
+                                        </tr>
                                         </thead>
                                         <tbody>
-                                            {clientes.map((cliente) => (
-                                                <tr key={cliente.id}>
-                                                    <td>{cliente.name}</td>
-                                                    <td>{cliente.email}</td>
-                                                    <td>
-                                                        <input type="radio" name="cliente" value={cliente.id}
-                                                               onChange={(e) => {
-                                                                   const selectedCli = clientes.find(cli => cli.id === Number(e.target.value));
-                                                                   setSelectedCliente(selectedCli);
-                                                                   setCedulaCliente(cliente.id);
-                                                               }}
-                                                        />
-                                                    </td>
-                                                </tr>
-                                            ))}
+                                        {clientes.map((cliente) => (
+                                            <tr key={cliente.id}>
+                                                <td>{cliente.name}</td>
+                                                <td>{cliente.email}</td>
+                                                <td>
+                                                    <input type="radio" name="cliente" value={cliente.id}
+                                                           onChange={(e) => {
+                                                               const selectedCli = clientes.find(cli => cli.id === Number(e.target.value));
+                                                               setSelectedCliente(selectedCli);
+                                                               setCedulaCliente(cliente.id);
+                                                           }}
+                                                    />
+                                                </td>
+                                            </tr>
+                                        ))}
                                         </tbody>
                                     </table>
                                 </div>

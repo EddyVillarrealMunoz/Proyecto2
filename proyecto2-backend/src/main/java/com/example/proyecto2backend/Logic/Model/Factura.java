@@ -34,6 +34,11 @@ public class Factura {
     @Min(value = 0, message = "{error.Negative}")
     private Double finalPrice;
 
-    @OneToMany(mappedBy = "factura", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FacturaDetalle> listFacturasDetalles = new ArrayList<>();
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "facturas_facturasDetalles",
+            joinColumns = @JoinColumn(name = "factura_id"),
+            inverseJoinColumns = @JoinColumn(name = "facturaDetalle_id")
+    )
+    private List<FacturaDetalle> listFacturaDetalle = new ArrayList<>();
 }

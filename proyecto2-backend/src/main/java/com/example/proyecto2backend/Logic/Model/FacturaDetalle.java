@@ -13,16 +13,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "facturas_detalles")
+@Table(name = "facturasDetalles")
 public class FacturaDetalle {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY) // Agrega esta línea
     private Long id;
     @NotEmpty(message = "{error.Empty}")
     private int idProducto;
     @Min(value = 0, message = "{error.Negative}")
     private int cantidad;
+
     @ManyToOne
-    @JoinColumn(name = "factura_id")
+    @JoinColumn(name = "factura_id", nullable = false)
     private Factura factura;
 }
