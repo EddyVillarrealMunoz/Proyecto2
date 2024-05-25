@@ -285,3 +285,17 @@ input[type="submit"]:hover, input[type="date"]:hover, input[type="radio"]:hover 
     background-color: var(--color2);
     border-color: #0d6efd;
 }
+
+.pdf-button,
+.xml-button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.pdf-button img,
+.xml-button img {
+    width: 60px;
+    height: 60px;
+}
