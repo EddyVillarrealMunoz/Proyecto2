@@ -4,12 +4,16 @@ import ActComercialService from "../../Services/ActComercialService";
 import {Link, useNavigate, useParams} from "react-router-dom";
 
 export const CreateOrUpdateProveedor = () => {
-
+    //------------------------------------------------------------------------------------------------------------------
+    // CONSTANTES
+    //------------------------------------------------------------------------------------------------------------------
     const [id, setId] = useState('');
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [actComerciales, setActComerciales] = useState([]); //Array que recupera todos los objetos tipo actComercial
+    const [selectedActComerciales, setSelectedActComerciales] = useState([]);
+
     const [actComercial, setActComercial] = useState(null); //Variable que guardará la actComercial seleccionada
 
     const navigate = useNavigate();
@@ -23,9 +27,12 @@ export const CreateOrUpdateProveedor = () => {
             return;
         }
 
-        const proveedor = { id, name, email, password, actComercial};
+        const proveedor = {id, name, email, password, actComerciales: selectedActComerciales.map(id => ({id}))};
+        console.log("Selected act comerciales: ", selectedActComerciales);
+        console.log("Act comerciales: ", actComerciales);
 
-        if(idUpdate){
+
+        if (idUpdate) {
             try {
                 const response = await ProveedorService.updateProveedor(idUpdate, proveedor);
                 console.log(response.data);
@@ -34,11 +41,10 @@ export const CreateOrUpdateProveedor = () => {
                 console.error(error);
                 alert('Hubo un error al editar el proveedor');
             }
-        }
-        else{
+        } else {
             try {
                 const response = await ProveedorService.saveProveedor(proveedor);
-                console.log(response.data);
+                console.log("Crear Proveedor" + response.data);
                 navigate('/proveedores');
             } catch (error) {
                 console.error(error);
@@ -56,7 +62,7 @@ export const CreateOrUpdateProveedor = () => {
         }).catch((error) => {
             console.log(error);
         })
-    },[])
+    }, [])
 
     useEffect(() => {
         ActComercialService.getActComerciales().then((response) => {
@@ -64,7 +70,7 @@ export const CreateOrUpdateProveedor = () => {
         }).catch((error) => {
             console.log(error);
         })
-    },[])
+    }, [])
 
     /*useEffect(() => {
         ActComercialService.getActComercialById(1).then((response) => {
@@ -74,8 +80,8 @@ export const CreateOrUpdateProveedor = () => {
         })
     },[])*/
 
-    const title = () =>{
-        if(idUpdate) {
+    const title = () => {
+        if (idUpdate) {
             return <p className='text-center'>Actualizar Proveedor {id}</p>;
         }
         return <p className='text-center'>Registro Proveedor</p>;
@@ -105,7 +111,6 @@ export const CreateOrUpdateProveedor = () => {
                                         />
                                     </div>
                                 }
-
                                 <div className='form-group mb-2'>
                                     <label className="form-label">Nombre</label>
                                     <input
@@ -117,7 +122,6 @@ export const CreateOrUpdateProveedor = () => {
                                         onChange={(e) => setName(e.target.value)}
                                     />
                                 </div>
-
                                 <div className='form-group mb-2'>
                                     <label className="form-label">Email</label>
                                     <input
@@ -129,7 +133,6 @@ export const CreateOrUpdateProveedor = () => {
                                         onChange={(e) => setEmail(e.target.value)}
                                     />
                                 </div>
-
                                 <div className='form-group mb-2'>
                                     <label className="form-label">Password</label>
                                     <input
@@ -141,8 +144,53 @@ export const CreateOrUpdateProveedor = () => {
                                         onChange={(e) => setPassword(e.target.value)}
                                     />
                                 </div>
+                                <div className={"mb-3"}>
+                                    <label>Actividades Comerciales:</label>
+                                    <div>
+                                        {actComerciales.map((act, index) => (
+                                            <div key={index} className="form-check">
+                                                <input
+                                                    type="checkbox"
+                                                    id={`actComercial_${act.id}`}
+                                                    name={`actComercial_${act.id}`}
+                                                    value={act.id}
+                                                    checked={selectedActComerciales.includes(act.id)}
+                                                    onChange={(e) => {
+                                                        const checked = e.target.checked;
+                                                        setSelectedActComerciales(prevState => {
+                                                            if (checked) {
+                                                                return [...prevState, act.id];
+                                                            } else {
+                                                                return prevState.filter(id => id !== act.id);
+                                                            }
+                                                        });
+                                                    }}
+                                                    className="form-check-input"
+                                                />
+                                                <label htmlFor={`actComercial_${act.id}`}
+                                                       className="form-check-label">{act.description}</label>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                                <button className='btn btn-success' onClick={(e) => saveOrUpdateProveedor(e)}>Save
+                                </button>
+                                &nbsp;&nbsp;
+                                <Link to='/proveedores' className='btn btn-danger'>Cancelar</Link>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
 
-                                <div>
+export default CreateOrUpdateProveedor;
+
+
+/*
+<div>
                                     <p>Actividades Comerciales</p>
                                     {actComerciales.length > 0 ? (
                                         <select value={actComercial ? actComercial.id : ''}
@@ -161,19 +209,4 @@ export const CreateOrUpdateProveedor = () => {
                                         <p>Actualmente no existen actividades para elegir</p>
                                     )}
                                 </div>
-
-                                <button className='btn btn-success' onClick={(e) => saveOrUpdateProveedor(e)}>Save
-                                </button>
-                                &nbsp;&nbsp;
-                                <Link to='/proveedores' className='btn btn-danger'>Cancelar</Link>
-
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    )
-}
-
-export default CreateOrUpdateProveedor;
+ */

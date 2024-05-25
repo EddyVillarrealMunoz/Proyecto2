@@ -1,5 +1,6 @@
 package com.example.proyecto2backend.Presentation.Controller;
 
+import com.example.proyecto2backend.Logic.Model.ActComercial;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import com.example.proyecto2backend.Data.Repository.ProveedorRepository;
 import com.example.proyecto2backend.Exception.ResourceNotFoundException;
@@ -27,14 +28,28 @@ public class ProveedorController {
 
     @PostMapping("/proveedores")
     public Proveedor saveProveedor(@RequestBody Proveedor proveedor) {
+        System.out.println("Controller Post Proveedor" + proveedor.toString());
+
+
         return proveedorRepository.save(proveedor);
     }
 
     @GetMapping("/proveedores/{id}")
-    public ResponseEntity<Proveedor> findProveedorById(@PathVariable String id) {
+    public ResponseEntity<Proveedor> findProveedorById(@PathVariable String id)
+    {
         Proveedor proveedor = proveedorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Proveedor not found with id: " + id));
+
+        System.out.println("GET Proveedor: " + proveedor.toString());
         return ResponseEntity.ok(proveedor);
+    }
+
+    @GetMapping("/proveedores/actcomerciales/{id}")
+    public ResponseEntity<List<ActComercial>> getActComercialesByProveedorId(@PathVariable String id) {
+        Proveedor proveedor = proveedorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Proveedor not found with id: " + id));
+        List<ActComercial> actComerciales = proveedor.getActComerciales();
+        return ResponseEntity.ok(actComerciales);
     }
 
     @PutMapping("/proveedores/{idUpdate}")
@@ -47,7 +62,7 @@ public class ProveedorController {
         proveedorUpdate.setEmail(proveedor.getEmail());
         proveedorUpdate.setPassword(proveedor.getPassword());
         proveedorUpdate.setAccepted(proveedor.isAccepted());
-        proveedorUpdate.setActComercial(proveedor.getActComercial());
+     //   proveedorUpdate.setActComercial(proveedor.getActComercial());
 
         Proveedor updatedProveedor = proveedorRepository.save(proveedorUpdate);
         return ResponseEntity.ok(updatedProveedor);

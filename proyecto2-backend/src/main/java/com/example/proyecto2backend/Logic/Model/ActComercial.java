@@ -1,11 +1,12 @@
 package com.example.proyecto2backend.Logic.Model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,6 +16,17 @@ import lombok.NoArgsConstructor;
 public class ActComercial {
     @Id
     int id;
-    String name;
     String description;
+
+    // Relación inversa con Producto (si un ActComercial puede tener varios productos)
+    @OneToMany(mappedBy = "actComercial")
+    private List<Producto> productos = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "ActComercial{" +
+                "id=" + id +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

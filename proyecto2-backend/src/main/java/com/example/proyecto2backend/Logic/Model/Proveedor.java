@@ -11,6 +11,7 @@ import com.example.proyecto2backend.Logic.Model.Cliente;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,10 +33,6 @@ public class Proveedor {
 
     private String rol = "PRO";
 
-    @ManyToOne
-    @JoinColumn(name="act_comercial_id", nullable = true)
-    private ActComercial actComercial;
-
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "proveedores_clientes",
@@ -43,4 +40,12 @@ public class Proveedor {
             inverseJoinColumns = @JoinColumn(name = "cliente_id")
     )
     private List<Cliente> clientes = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "proveedor_actividades_comerciales",
+            joinColumns = @JoinColumn(name = "proveedor_id"),
+            inverseJoinColumns = @JoinColumn(name = "act_comercial_id")
+    )
+    private List<ActComercial> actComerciales = new ArrayList<>();
 }

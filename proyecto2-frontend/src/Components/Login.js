@@ -4,6 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
 export const Login = () => {
+    //------------------------------------------------------------------------------------------------------------------
+    // CONSTANTES
+    //------------------------------------------------------------------------------------------------------------------
     const [id, setId] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
@@ -28,6 +31,9 @@ export const Login = () => {
         }
     };
 
+    //------------------------------------------------------------------------------------------------------------------
+    // RENDERIZADO
+    //------------------------------------------------------------------------------------------------------------------
     return (
         <div className="container">
             <div className="row justify-content-center">

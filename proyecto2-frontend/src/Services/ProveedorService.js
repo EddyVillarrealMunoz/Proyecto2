@@ -23,6 +23,10 @@ class ProveedorService {
     deleteProveedor(proveedorId) {
         return axios.delete(PROVEEDOR_BASE_REST_API_URL + '/' + proveedorId);
     }
+
+    getActComercialesByProveedorId(proveedorId) {
+        return axios.get(PROVEEDOR_BASE_REST_API_URL + '/actcomerciales' + '/' + proveedorId);
+    }
 }
 
 export default new ProveedorService();

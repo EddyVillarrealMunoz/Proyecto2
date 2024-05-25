@@ -2,6 +2,8 @@
 <project version="4">
   <component name="JpaBuddyIdeaProjectConfig">
     <option name="defaultUnitInitialized" value="true" />
+    <option name="reLastEntityCreationPackage" value="proyecto2-backend/src/main/java/com/example/proyecto2backend/Logic/Model" />
     <option name="renamerInitialized" value="true" />
+    <option name="reverseEngineeringLastDbConnectionId" value="8fbd92b3-bbb8-4520-9972-65f5971460ea" />
   </component>
 </project>

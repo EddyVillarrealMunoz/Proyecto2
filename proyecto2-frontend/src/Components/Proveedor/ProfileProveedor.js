@@ -7,7 +7,7 @@ const ProfileProveedor = ( ) => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [accepted, setAccepted] = useState(false);
-    const [actComercial, setActComercial] = useState('');
+    const [actComerciales, setActComerciales] = useState('');
 
     const {id} = useParams(); //Obtenemos id del proveedor loggeado
 
@@ -17,7 +17,9 @@ const ProfileProveedor = ( ) => {
             setName(response.data.name);
             setEmail(response.data.email);
             setAccepted(response.data.accepted);
-            setActComercial(response.data.actComercial);
+            setActComerciales(response.data.actComerciales);
+
+
         }).catch((error) => {
             console.log(error);
         })
@@ -32,9 +34,17 @@ const ProfileProveedor = ( ) => {
                 <p><strong>Nombre: </strong> <span>{name}</span></p>
                 <p><strong>Email: </strong> <span>{email}</span></p>
                 <p><strong>Estado: </strong> <span>{accepted ? 'Ha sido aceptado como contribuyente' : 'Aún no ha sido aceptado como contribuyente'}</span></p>
-                <p><strong>Actividad Comercial:</strong> <span>{actComercial ? actComercial.name: 'No registra'}</span></p>
+                <p><strong>Actividades Comerciales:</strong></p>
+                <ul>
+                    {actComerciales && actComerciales.length > 0 ? (
+                        actComerciales.map((actividad, index) => (
+                            <li key={index}>{actividad.description}</li>
+                        ))
+                    ) : (
+                        <li>No registra actividades comerciales</li>
+                    )}
+                </ul>
                 {/*<p><strong>Clientes:</strong> <span>{actComercial ? clientes : 'No registra'}</span></p>*/}
-
                 <Link className="btn btn-info" to={`/update-proveedor/${id}`}>Actualizar Perfil</Link>
                 &nbsp;&nbsp;
                 <Link to="/" className="btn btn-danger">Cancelar</Link>
