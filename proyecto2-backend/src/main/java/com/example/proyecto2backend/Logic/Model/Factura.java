@@ -21,6 +21,7 @@ import java.util.List;
 @Table(name = "facturas")
 public class Factura {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Temporal(TemporalType.DATE)
     private Date date;
@@ -35,5 +36,4 @@ public class Factura {
 
     @OneToMany(mappedBy = "factura", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FacturaDetalle> listFacturasDetalles = new ArrayList<>();
-
 }

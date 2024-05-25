@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import FacturaService from "../../Services/FacturaService";
 import { Link, useNavigate } from "react-router-dom";
 import ProductoService from "../../Services/ProductoService";
@@ -11,7 +11,7 @@ export const CreateFactura = () => {
     const [date, setDate] = useState(new Date());
     const [finalPrice, setFinalPrice] = useState(0);
     const [listFacturasDetalles, setListFacturasDetalles] = useState([]);
-    const [cedulaProveedor, setCedulaProveedor] = useState('');
+    const cedulaProveedor = localStorage.getItem('proveedorId');
 
     const [productos, setProductos] = useState([]);
     const [clientes, setClientes] = useState([]);
@@ -22,65 +22,61 @@ export const CreateFactura = () => {
     const tipo_pago = ['tarjeta', 'efectivo'];
     const navigate = useNavigate();
 
-    const saveFactura = async (e) => {
+    const fetchData = useCallback(async () => {
+        try {
+            const [productosData, clientesData] = await Promise.all([
+                ProductoService.getProductos(),
+                ClienteService.getClientes()
+            ]);
+
+            setProductos(productosData.data);
+            setClientes(clientesData.data);
+        } catch (error) {
+            console.log(error);
+        }
+    }, []);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
+
+    const saveFactura = useCallback(async (e) => {
         e.preventDefault();
 
-        //Verifica que se seleccionó un cliente, tipo de pago, fecha y que se haya seleccionado un producto/servicio.
         if (!cedulaCliente || !tipoPago || !date || selectedProductos.length === 0) {
             alert('Por favor, rellena todos los campos');
             return;
         }
 
-        //Es para obtener precio final según el valor de los productos/servicios, el iva y la cantidad.
         const total = selectedProductos.reduce((sum, producto) => {
             const cantidad = productoCantidades[producto.id] || 1;
             const precioConIva = producto.price * (1 + producto.ivaFee / 100);
             return sum + precioConIva * cantidad;
-            }, 0);
+        }, 0);
 
-        //Es para obtener los productos/servicios seleccionados y sus cantidades
         const facturaDetalle = selectedProductos.map((producto) => ({
             idProducto: producto.id,
             cantidad: productoCantidades[producto.id] || 1,
         }));
 
-
         const factura = {
+            cedulaProveedor,
             cedulaCliente,
             tipoPago,
             date,
             finalPrice: total,
             listFacturasDetalles: facturaDetalle,
-            cedulaProveedor  //Hay que obtener el id del proveedor logeado
         };
 
-
         try {
-            const response = await FacturaService.saveFactura(factura);
-            console.log(response.data);
+            await FacturaService.saveFactura(factura);
             navigate('/facturas');
         } catch (error) {
             console.error(error);
             alert('Hubo un error al guardar la factura');
         }
-    };
+    }, [cedulaCliente, tipoPago, date, selectedProductos, productoCantidades, cedulaProveedor, navigate]);
 
-    useEffect(() => {
-        ProductoService.getProductos().then((response) => {
-            setProductos(response.data);
-        }).catch((error) => {
-            console.log(error);
-        });
-
-        ClienteService.getClientes().then((response) => {
-            setClientes(response.data);
-        }).catch((error) => {
-            console.log(error);
-        });
-
-    }, []);
-
-    //Para convertir la fecha seleccionada de tipo string a Date.
     const handleDateChange = (e) => {
         setDate(new Date(e.target.value));
     };

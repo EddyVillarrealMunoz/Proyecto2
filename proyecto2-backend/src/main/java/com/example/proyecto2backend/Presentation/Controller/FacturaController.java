@@ -33,6 +33,7 @@ public class FacturaController {
 
     @PostMapping("/facturas")
     public Factura saveFactura(@RequestBody Factura factura) {
+        System.out.println("FactController L36: " + factura);
         return facturaRepository.save(factura);
     }
 

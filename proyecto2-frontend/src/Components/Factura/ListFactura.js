@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import FacturaService from "../../Services/FacturaService";
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom'
-import Alert from 'react-bootstrap/Alert';
 
 export const ListFacturas = () => {
     const [facturas, setFacturas] = useState([]);
