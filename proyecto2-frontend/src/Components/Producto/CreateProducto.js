@@ -31,12 +31,6 @@ export const CreateProducto = ({mode}) => {
     const createOrUpdateProducto = async (e) => {
         e.preventDefault();
 
-        /*
-        if (!measure || !description || !price || !ivaFee) { // Validación de los campos del formulario
-            alert('Por favor, rellena todos los campos');
-            return;
-        }
-        */
         if (validarForm()) {
             const producto = {description, measure, price, type, ivaFee};
 

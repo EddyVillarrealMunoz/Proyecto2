@@ -26,7 +26,6 @@ function App() {
     <div >
         <BrowserRouter>
             {<Header/>}
-            <div className='container'>
                 <Routes>
                     <Route exact path = '/'                           element = {< IndexComponent />}> </Route>
                     <Route exact path = '/login'                      element = {< Login />}> </Route>
@@ -43,7 +42,8 @@ function App() {
 
 
                     <Route exact path = '/save-clientes'              element = {< CreateCliente/>}></Route>
-                    <Route exact path = '/clientes/view/:idP'         element = {< CreateCliente/>}></Route>
+                    <Route exact path = '/clientes/edit/:idP'         element = {< CreateCliente mode={"edit"}/>}></Route>
+                    <Route exact path = '/clientes/view/:idP'         element = {< CreateCliente mode={"view"}/>}></Route>
                     <Route exact path = '/clientes'                   element = {< ListClientes/>}></Route>
 
                     <Route exact path = '/facturas'                   element=  {< ListFacturas/>}></Route>
@@ -52,7 +52,6 @@ function App() {
 
                     <Route exact path = '/profile-proveedor/:id'      element = {< ProfileProveedor/>}></Route>
                 </Routes>
-            </div>
             {<Footer/>}
         </BrowserRouter>
     </div>

@@ -3,7 +3,7 @@ import ClienteService from "../../Services/ClienteService";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import InputMask from "react-input-mask";
 
-export const CreateCliente = () => {
+export const CreateCliente = ({mode}) => {
 
     //------------------------------------------------------------------------------------------------------------------
     // CONSTANTES
@@ -19,7 +19,7 @@ export const CreateCliente = () => {
 
     const navigate = useNavigate();
     const {idP} = useParams();
-    const isDisabled = Boolean(idP);
+    const isDisabled = mode === 'view';
 
     const [errors, setErrors] = useState({
         id: '',
@@ -40,20 +40,34 @@ export const CreateCliente = () => {
     const saveCliente = async (e) => {
         e.preventDefault();
 
-        if (validateForm()) {
-            telefono = telefono.replace(/-/g, '');
-            id = id.replace(/-/g, '');
+        telefono = telefono.replace(/-/g, '');
+        id = id.replace(/-/g, '');
 
+        if (validateForm())
+        {
             const cliente = {id, tipoCliente, name, direccion, telefono, email};
             console.log(cliente);
 
-            try {
-                const response = await ClienteService.saveCliente(cliente, proveedorId);
-                console.log(response.data);
-                navigate('/clientes');
-            } catch (error) {
-                console.error(error);
-                alert('Hubo un error al guardar el cliente');
+            if (idP && mode === 'edit') {
+                try {
+                    const repose = await ClienteService.updateCliente(id, cliente);
+                    console.log(repose.data);
+                    navigate('/clientes');
+                    alert('Cliente actualizado correctamente');
+                } catch (error) {
+                    console.error(error);
+                    alert('Hubo un error al actualizar el cliente');
+                }
+            } else {
+
+                try {
+                    const response = await ClienteService.saveCliente(cliente, proveedorId);
+                    console.log(response.data);
+                    navigate('/clientes');
+                } catch (error) {
+                    console.error(error);
+                    alert('Hubo un error al guardar el cliente');
+                }
             }
         }
     }
@@ -82,19 +96,21 @@ export const CreateCliente = () => {
     //------------------------------------------------------------------------------------------------------------------
     // FUNCIONES
     //------------------------------------------------------------------------------------------------------------------
+    function titulo() {
+        if (idP && mode === 'view') {
+            return <h1 className={"text-center card-header"}>Ver Cliente</h1>;
+        }
+        if (idP && mode === 'edit') {
+            return <h1 className={"text-center card-header"}>Editar Cliente</h1>;
+        }
+        return <h1 className={"text-center card-header"}>Nuevo Cliente</h1>;
+    }
+
     function mostrarBotonGuardar() {
-        if (idP) {
+        if (idP && mode === 'view') {
             return null;
         } else {
             return <button className='btn btn-success' onClick={(e) => saveCliente(e)}>Guardar</button>
-        }
-    }
-
-    function titulo() {
-        if (idP) {
-            return <h1 className={"text-center card-header"}>Ver Cliente</h1>;
-        } else {
-            return <h1 className={"text-center card-header"}>Nuevo Cliente</h1>;
         }
     }
 
@@ -115,10 +131,10 @@ export const CreateCliente = () => {
         if (!id) {
             errorsCopy.id = "El id es requerido";
             valid = false;
-        } else if (tipoCliente === true && id.length !== 11) {
+        } else if (tipoCliente === true && id.length !== 9) {
             errorsCopy.id = "El id debe tener una longitud de 9 caracteres para clientes fisicos";
             valid = false;
-        } else if (tipoCliente === false && id.length !== 12) {
+        } else if (tipoCliente === false && id.length !== 10) {
             errorsCopy.id = "El id debe tener una longitud de 10 caracteres para clientes juridicos";
             valid = false;
         } else {
@@ -173,7 +189,7 @@ export const CreateCliente = () => {
                     <div className='card-body'>
                         <form>
                             <div className={"mb-3"}>
-                                <select value={tipoCliente} id="tipoCliente" disabled={isDisabled}
+                                <select value={tipoCliente} id="tipoCliente" disabled={isDisabled || mode === 'edit'}
                                         className={`form-control ${errors.tipoCliente ? 'is-invalid' : ''}`}
                                         onChange={(e) => setTipoCliente(e.target.value)}>
                                     <option value="">Seleccione un Tipo de Identificacion</option>
@@ -184,8 +200,8 @@ export const CreateCliente = () => {
                             </div>
                             <div className={"mb-3"}>
                                 <InputMask
-                                    disabled={isDisabled}
-                                    mask={tipoCliente === "true" || 1 ? "9-9999-9999" :  "9-999-999999"}
+                                    disabled={isDisabled || mode === 'edit'}
+                                    mask={tipoCliente === "true" ? "9-9999-9999" : "9-999-999999"}
                                     type="text"
                                     placeholder="Digite id "
                                     name="id"
