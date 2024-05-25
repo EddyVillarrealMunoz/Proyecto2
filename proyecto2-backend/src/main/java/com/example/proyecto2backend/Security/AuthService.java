@@ -4,6 +4,7 @@ import com.example.proyecto2backend.Data.Repository.AdminRepository;
 import com.example.proyecto2backend.Data.Repository.HaciendaSTUBRepository;
 import com.example.proyecto2backend.Data.Repository.ProveedorRepository;
 import com.example.proyecto2backend.Logic.Model.Admin;
+import com.example.proyecto2backend.Logic.Model.Cliente;
 import com.example.proyecto2backend.Logic.Model.Proveedor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,11 @@ public class AuthService {
         Proveedor proveedor;
 
 
-
+        try {
+          Cliente cliente = haciendaSTUBRepository.getClienteHacienda(id);
+        } catch (Exception e) {
+            return null;
+        }
 
         // Primero intenta encontrar al usuario en el repositorio de Admin
         admin = adminRepository.findById(id).orElse(null);
