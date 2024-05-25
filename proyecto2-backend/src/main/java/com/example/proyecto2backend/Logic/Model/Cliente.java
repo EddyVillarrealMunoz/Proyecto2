@@ -18,4 +18,10 @@ public class Cliente {
     private String direccion;
     private String telefono;
     private String email;
+
+
+
+    @ManyToOne
+    @JoinColumn(name = "proveedor_id")
+    private Proveedor proveedor;
 }
