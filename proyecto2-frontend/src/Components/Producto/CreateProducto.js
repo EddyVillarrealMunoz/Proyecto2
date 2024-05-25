@@ -219,6 +219,7 @@ export const CreateProducto = ({mode}) => {
                                     onValueChange={(values) => setPrice(values.value)}
                                     thousandSeparator={true}
                                     prefix={'₡'}
+                                    decimalScale={2}
                                     placeholder="Digite precio"
                                     className={`form-control ${errors.price ? 'is-invalid' : ''}`}
                                 />
@@ -228,6 +229,7 @@ export const CreateProducto = ({mode}) => {
                                 <NumericFormat
                                     disabled={isDisabled}
                                     value={ivaFee}
+                                    decimalScale={2}
                                     onValueChange={(values) => setIvaFee(values.value)}
                                     suffix={'%'}
                                     placeholder="Digite IVA"

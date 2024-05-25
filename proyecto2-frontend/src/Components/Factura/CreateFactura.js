@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import FacturaService from "../../Services/FacturaService";
-import { Link, useNavigate } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import ProductoService from "../../Services/ProductoService";
 import ClienteService from "../../Services/ClienteService";
 import '../../css/style.css';
+import {NumericFormat} from "react-number-format";
 
 export const CreateFactura = () => {
     const [cedulaCliente, setCedulaCliente] = useState('');
@@ -82,21 +83,20 @@ export const CreateFactura = () => {
     };
 
     return (
-        <div>
-            <div className='container'>
-                <div className='row'>
-                    <div className='card col-md-6 offset-md-3 offset-md-3'>
-                        <h1 className='text-center'>
-                            <p className='text-center'>Creando Factura</p>
-                        </h1>
-                        <div className='card-body'>
-                            <form>
-                                <div className='form-group mb-2'>
-                                    <label className="form-label">Producto</label>
-                                    <br />
-                                    {productos.length > 0 ? (
-                                        <table className="table table-striped">
-                                            <thead>
+        <div className={"container"}>
+            <br/>
+            <br/>
+            <div className='card col-md-10 offset-md-1'>
+                <h1 className={"text-center card-header"}>Crear Factura</h1>;
+                <div className='card-body'>
+                    <form>
+                        <div className={"mb-3"}>
+                            <h4 className="form-label">Producto</h4>
+                            <br/>
+                            {productos.length > 0 ? (
+                                <div className="table-responsive">
+                                    <table className="table table-striped">
+                                        <thead>
                                             <tr>
                                                 <th>Descripción</th>
                                                 <th>Iva</th>
@@ -106,14 +106,14 @@ export const CreateFactura = () => {
                                                 <th>Seleccionar</th>
                                                 <th>Cantidad</th>
                                             </tr>
-                                            </thead>
-                                            <tbody>
+                                        </thead>
+                                        <tbody>
                                             {productos.map((producto) => (
                                                 <tr key={producto.id}>
                                                     <td>{producto.description}</td>
-                                                    <td>{producto.ivaFee}</td>
+                                                    <td>{producto.ivaFee}%</td>
                                                     <td>{producto.measure}</td>
-                                                    <td>{producto.price}</td>
+                                                    <td>₡{producto.price.toLocaleString('es-CR')}</td>
                                                     <td>{producto.type ? "Producto" : "Servicio"}</td>
                                                     <td>
                                                         <input type="checkbox" name="producto" value={producto.id}
@@ -127,38 +127,40 @@ export const CreateFactura = () => {
                                                         />
                                                     </td>
                                                     <td>
-                                                        <input type="number" min="1" name="cantidad"
-                                                               className="input-cantidad"
-                                                               onChange={(e) => {
-                                                                   setProductoCantidades({
-                                                                       ...productoCantidades,
-                                                                       [producto.id]: e.target.value
-                                                                   });
-                                                               }}
+                                                        <NumericFormat type="number" min="1" name="cantidad"
+                                                                       decimalScale={2}
+                                                                       className="input-cantidad"
+                                                                       onChange={(e) => {
+                                                                           setProductoCantidades({
+                                                                               ...productoCantidades,
+                                                                               [producto.id]: e.target.value
+                                                                           });
+                                                                       }}
                                                         />
                                                     </td>
                                                 </tr>
                                             ))}
-                                            </tbody>
-                                        </table>
-                                    ) : (
-                                        <p>Actualmente no existen productos para elegir</p>
-                                    )}
+                                        </tbody>
+                                    </table>
                                 </div>
-
-                                <div className='form-group mb-2'>
-                                    <label className="form-label">Cliente</label>
-                                    <br />
-                                    {clientes.length > 0 ? (
-                                        <table className="table table-striped">
-                                            <thead>
+                            ) : (
+                                <p>Actualmente no existen productos para elegir</p>
+                            )}
+                        </div>
+                        <div className={"mb-3"}>
+                            <h4 className="form-label">Cliente</h4>
+                            <br/>
+                            {clientes.length > 0 ? (
+                                <div className="table-responsive">
+                                    <table className="table table-striped">
+                                        <thead>
                                             <tr>
                                                 <th>Nombre</th>
                                                 <th>Email</th>
                                                 <th>Seleccionar</th>
                                             </tr>
-                                            </thead>
-                                            <tbody>
+                                        </thead>
+                                        <tbody>
                                             {clientes.map((cliente) => (
                                                 <tr key={cliente.id}>
                                                     <td>{cliente.name}</td>
@@ -174,52 +176,48 @@ export const CreateFactura = () => {
                                                     </td>
                                                 </tr>
                                             ))}
-                                            </tbody>
-                                        </table>
-                                    ) : (
-                                        <p>Actualmente no existen clientes para elegir</p>
-                                    )}
+                                        </tbody>
+                                    </table>
                                 </div>
-
-                                <div className='radio-option'>
-                                    <input
-                                        type="radio"
-                                        name="tipopago"
-                                        value="tarjeta"
-                                        checked={tipoPago === 'tarjeta'}
-                                        onChange={(e) => setTipoPago(e.target.value)}
-                                    />
-                                    <label htmlFor="Tarjeta">Tarjeta</label>
-                                </div>
-                                <div className='radio-option'>
-                                    <input
-                                        type="radio"
-                                        name="tipopago"
-                                        value="efectivo"
-                                        checked={tipoPago === 'efectivo'}
-                                        onChange={(e) => setTipoPago(e.target.value)}
-                                    />
-                                    <label htmlFor="Efectivo">Efectivo</label>
-                                </div>
-
-                                <div className='form-group mb-2'>
-                                    <label className="form-label">Seleccione Fecha</label>
-                                    <input
-                                        type="date"
-                                        name="fecha"
-                                        className="form-control"
-                                        required
-                                        value={date.toISOString().substr(0, 10)}
-                                        onChange={handleDateChange}
-                                    />
-                                </div>
-
-                                <button className='btn btn-success' onClick={(e) => saveFactura(e)}>Save</button>
-                                &nbsp;&nbsp;
-                                <Link to='/facturas' className='btn btn-danger'>Cancelar</Link>
-                            </form>
+                            ) : (
+                                <p>Actualmente no existen clientes para elegir</p>
+                            )}
                         </div>
-                    </div>
+                        <div className='radio-option'>
+                            <input
+                                type="radio"
+                                name="tipopago"
+                                value="tarjeta"
+                                checked={tipoPago === 'tarjeta'}
+                                onChange={(e) => setTipoPago(e.target.value)}
+                            />
+                            <label htmlFor="Tarjeta">Tarjeta</label>
+                        </div>
+                        <div className='radio-option'>
+                            <input
+                                type="radio"
+                                name="tipopago"
+                                value="efectivo"
+                                checked={tipoPago === 'efectivo'}
+                                onChange={(e) => setTipoPago(e.target.value)}
+                            />
+                            <label htmlFor="Efectivo">Efectivo</label>
+                        </div>
+                        <div className={"mb-3"}>
+                            <label className="form-label">Seleccione Fecha</label>
+                            <input
+                                type="date"
+                                name="fecha"
+                                className="form-control"
+                                required
+                                value={date.toISOString().substr(0, 10)}
+                                onChange={handleDateChange}
+                            />
+                        </div>
+                        <button className='btn btn-success' onClick={(e) => saveFactura(e)}>Save</button>
+                        &nbsp;&nbsp;
+                        <Link to='/facturas' className='btn btn-danger'>Cancelar</Link>
+                    </form>
                 </div>
             </div>
         </div>
