@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import com.example.proyecto2backend.Logic.Model.ActComercial;
 import com.example.proyecto2backend.Logic.Model.Cliente;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -35,7 +36,11 @@ public class Proveedor {
     @JoinColumn(name="act_comercial_id", nullable = true)
     private ActComercial actComercial;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "proveedor_id", nullable = true) //La tabla cliente tendrá el proveedor_id
-    private List<Cliente> clientes;
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "proveedores_clientes",
+            joinColumns = @JoinColumn(name = "proveedor_id"),
+            inverseJoinColumns = @JoinColumn(name = "cliente_id")
+    )
+    private List<Cliente> clientes = new ArrayList<>();
 }
