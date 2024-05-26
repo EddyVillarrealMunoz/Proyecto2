@@ -304,3 +304,27 @@ input[type="submit"]:hover, input[type="date"]:hover, input[type="radio"]:hover 
     width: 60px;
     height: 60px;
 }
+
+.table-scroll {
+    display: block;
+    width: 100%;
+}
+
+.table-scroll thead {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.table-scroll tbody {
+    display: block;
+    max-height: 250px;
+    overflow-y: auto;
+    width: 100%;
+}
+
+.table-scroll tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}

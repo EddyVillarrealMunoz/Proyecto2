@@ -73,73 +73,70 @@ export const ProfileAdmin = () => {
             <div className="create">
                 <a className="boton-create" href="/login">Sign Out</a>
             </div>
-            <div>
-                <table>
-                    <thead>
-                    <tr>
-                        <th>Cédula</th>
-                        <th>Nombre</th>
-                        <th>E-mail</th>
-                        <th>Actividad Comercial</th>
-                        <th>Estado</th>
-                        <th>Aprobar</th>
-                        <th>Rechazar</th>
-                        <th>Eliminar</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {
-                        proveedores.map(
-                            proveedor =>
-                                <tr key={proveedor.id}>
+            <table className="table-scroll">
+                <thead>
+                <tr>
+                    <th>Cédula</th>
+                    <th>Nombre</th>
+                    <th>E-mail</th>
+                    <th>Actividad Comercial</th>
+                    <th>Estado</th>
+                    <th>Aprobar</th>
+                    <th>Rechazar</th>
+                    <th>Eliminar</th>
+                </tr>
+                </thead>
+                <tbody>
+                {
+                    proveedores.map(
+                        proveedor =>
+                            <tr key={proveedor.id}>
+                                <td>{proveedor.id}</td>
+                                <td>{proveedor.name}</td>
+                                <td>{proveedor.email}</td>
+                                <td>{proveedor.actComercial ? proveedor.actComercial.name : 'No especificado'}</td>
+                                <td style={{backgroundColor: proveedor.accepted ? 'lightgreen' : 'lightcoral'}}>
+                                    {proveedor.accepted ? 'Aprobado' : 'En espera'}
+                                </td>
 
-                                    <td>{proveedor.id}</td>
-                                    <td>{proveedor.name}</td>
-                                    <td>{proveedor.email}</td>
-                                    <td>{proveedor.actComercial ? proveedor.actComercial.name : 'No especificado'}</td>
-                                    <td style={{backgroundColor: proveedor.accepted ? 'lightgreen' : 'lightcoral'}}>
-                                        {proveedor.accepted ? 'Aprobado' : 'En espera'}
-                                    </td>
+                                <td>
+                                    <img
+                                        className="imagen-approve"
+                                        src={approveImage}
+                                        height={20}
+                                        width={20}
+                                        alt="Aprobar"
+                                        onClick={() => handleAccept(proveedor.id)}
+                                    />
+                                </td>
 
-                                    <td>
-                                        <img
-                                            className="imagen-approve"
-                                            src={approveImage}
-                                            height={20}
-                                            width={20}
-                                            alt="Aprobar"
-                                            onClick={() => handleAccept(proveedor.id)}
-                                        />
-                                    </td>
+                                <td>
+                                    <img
+                                        className="imagen-reject"
+                                        src={waitingImage}
+                                        height={20}
+                                        width={20}
+                                        alt="Rechazar"
+                                        onClick={() => handleReject(proveedor.id)}
+                                    />
+                                </td>
 
-                                    <td>
-                                        <img
-                                            className="imagen-reject"
-                                            src={waitingImage}
-                                            height={20}
-                                            width={20}
-                                            alt="Rechazar"
-                                            onClick={() => handleReject(proveedor.id)}
-                                        />
-                                    </td>
-
-                                    <td>
-                                        <img
-                                            className="imagen-delete"
-                                            src={rejectImage}
-                                            height={20}
-                                            width={20}
-                                            alt="Eliminar"
-                                            onClick={() => deleteProveedor(proveedor.id)}
-                                        />
-                                    </td>
-                                </tr>
-                        )
-                    }
-                    </tbody>
-                </table>
-            </div>
-            {showAlert && <Alert variant="danger" onClose={() => setShowAlert(false)} dismissible>{alertMessage}</Alert>} {/* Muestra la alerta si showAlert es true */}
+                                <td>
+                                    <img
+                                        className="imagen-delete"
+                                        src={rejectImage}
+                                        height={20}
+                                        width={20}
+                                        alt="Eliminar"
+                                        onClick={() => deleteProveedor(proveedor.id)}
+                                    />
+                                </td>
+                            </tr>
+                    )
+                }
+                </tbody>
+            </table>
+            {showAlert && <Alert variant="danger" onClose={() => setShowAlert(false)} dismissible>{alertMessage}</Alert>}
         </div>
     );
 }
