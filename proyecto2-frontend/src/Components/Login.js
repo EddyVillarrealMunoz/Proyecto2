@@ -1,13 +1,13 @@
 import React, {useState} from 'react';
 import axios from 'axios';
 import {Link, useNavigate} from 'react-router-dom';
+import Alert from 'react-bootstrap/Alert'; // Importa el componente Alert de Bootstrap
 
 export const Login = () => {
-    //------------------------------------------------------------------------------------------------------------------
-    // CONSTANTES
-    //------------------------------------------------------------------------------------------------------------------
     const [id, setId] = useState('');
     const [password, setPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+    const [showAlert, setShowAlert] = useState(false); // Nuevo estado para manejar la visibilidad de la alerta
     const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
@@ -27,12 +27,11 @@ export const Login = () => {
             }
         } catch (error) {
             console.error('Error al iniciar sesión', error);
+            setErrorMessage('Error al iniciar sesión. Por favor, verifica tus credenciales.');
+            setShowAlert(true); // Muestra la alerta
         }
     };
 
-    //------------------------------------------------------------------------------------------------------------------
-    // RENDERIZADO
-    //------------------------------------------------------------------------------------------------------------------
     return (
         <div className="container">
             <br/>
@@ -59,6 +58,7 @@ export const Login = () => {
                         <Link to="/save-proveedor" className="btn btn-register">Registrarse</Link>
                     </div>
                 </div>
+                {showAlert && <Alert variant="danger" onClose={() => setShowAlert(false)} dismissible>{errorMessage}</Alert>} {/* Muestra la alerta de Bootstrap si showAlert es true */}
             </div>
         </div>
     );
