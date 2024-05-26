@@ -4,6 +4,7 @@ import '../../css/style.css';
 import ProveedorService from "../../Services/ProveedorService";
 import approveImage from '../../images/approve.png';
 import rejectImage from '../../images/delete.png';
+import waitingImage from '../../images/waiting.png';
 
 export const ProfileAdmin = () => {
 
@@ -33,6 +34,21 @@ export const ProfileAdmin = () => {
             });
     }
 
+    const handleReject = (id) => {
+        const updatedProveedor = proveedores.find(proveedor => proveedor.id === id);
+        updatedProveedor.accepted = false;
+
+        ProveedorService.updateProveedor(id, updatedProveedor)
+            .then(response => {
+                setProveedores(proveedores.map(proveedor =>
+                    proveedor.id === id ? updatedProveedor : proveedor
+                ));
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
+
     const deleteProveedor = (id) => {
         ProveedorService.deleteProveedor(id)
             .then(response => {
@@ -45,7 +61,7 @@ export const ProfileAdmin = () => {
 
     return (
         <div className='tabla-administrador'>
-            <h2>Solicitudes</h2>
+            <h2>Proveedores</h2>
             <div className="create">
                 <a className="boton-create" href="/login">Sign Out</a>
             </div>
@@ -57,13 +73,15 @@ export const ProfileAdmin = () => {
                         <th>Nombre</th>
                         <th>E-mail</th>
                         <th>Actividad Comercial</th>
+                        <th>Estado</th>
                         <th>Aprobar</th>
                         <th>Rechazar</th>
+                        <th>Eliminar</th>
                     </tr>
                     </thead>
                     <tbody>
                     {
-                        proveedores.filter(proveedor => !proveedor.accepted).map(
+                        proveedores.map(
                             proveedor =>
                                 <tr key={proveedor.id}>
 
@@ -71,6 +89,9 @@ export const ProfileAdmin = () => {
                                     <td>{proveedor.name}</td>
                                     <td>{proveedor.email}</td>
                                     <td>{proveedor.actComercial ? proveedor.actComercial.name : 'No especificado'}</td>
+                                    <td style={{backgroundColor: proveedor.accepted ? 'lightgreen' : 'lightcoral'}}>
+                                        {proveedor.accepted ? 'Aprobado' : 'En espera'}
+                                    </td>
 
                                     <td>
                                         <img
@@ -85,44 +106,14 @@ export const ProfileAdmin = () => {
 
                                     <td>
                                         <img
-                                            className="imagen-delete"
-                                            src={rejectImage}
+                                            className="imagen-reject"
+                                            src={waitingImage}
                                             height={20}
                                             width={20}
                                             alt="Rechazar"
-                                            onClick={() => handleAccept(proveedor.id)}
+                                            onClick={() => handleReject(proveedor.id)}
                                         />
                                     </td>
-                                </tr>
-                        )
-
-                    }
-                    </tbody>
-                </table>
-            </div>
-
-            <div>
-                <h2>Aprobados</h2>
-                <table>
-                    <thead>
-                    <tr>
-                        <th>Cédula</th>
-                        <th>Nombre</th>
-                        <th>E-mail</th>
-                        <th>Actividad Comercial</th>
-                        <th>Eliminar</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {
-                        proveedores.filter(proveedor => proveedor.accepted).map(
-                            proveedor =>
-                                <tr key={proveedor.id}>
-
-                                    <td>{proveedor.id}</td>
-                                    <td>{proveedor.name}</td>
-                                    <td>{proveedor.email}</td>
-                                    <td>{proveedor.actComercial ? proveedor.actComercial.name : 'No especificado'}</td>
 
                                     <td>
                                         <img
@@ -130,7 +121,7 @@ export const ProfileAdmin = () => {
                                             src={rejectImage}
                                             height={20}
                                             width={20}
-                                            alt="Rechazar"
+                                            alt="Eliminar"
                                             onClick={() => deleteProveedor(proveedor.id)}
                                         />
                                     </td>
@@ -145,5 +136,3 @@ export const ProfileAdmin = () => {
 }
 
 export default ProfileAdmin;
-
-

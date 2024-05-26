@@ -2,19 +2,10 @@ package com.example.proyecto2backend.Presentation.Controller;
 
 import com.example.proyecto2backend.Data.Repository.FacturaDetalleRepository;
 import com.example.proyecto2backend.Data.Repository.FacturaRepository;
-import com.example.proyecto2backend.Data.Repository.ProductoRepository;
 import com.example.proyecto2backend.Logic.Model.FacturaDetalle;
-import com.example.proyecto2backend.Logic.Model.Producto;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
-import jdk.swing.interop.SwingInterOpUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import com.example.proyecto2backend.Data.Repository.ClienteRepository;
 import com.example.proyecto2backend.Exception.ResourceNotFoundException;
 import com.example.proyecto2backend.Logic.Model.Factura;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +49,6 @@ public class FacturaController {
             FacturaDetalle savedDetalle = facturaDetalleRepository.save(facturaDetalle);
             savedFacturaDetalles.add(savedDetalle);
         }
-
         factura.setListFacturaDetalle(savedFacturaDetalles);
         return facturaRepository.save(factura);
     }

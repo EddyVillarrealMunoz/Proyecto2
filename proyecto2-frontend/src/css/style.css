@@ -211,10 +211,20 @@ button {
     margin: 1rem;
 }
 
-.imagen-edit, .imagen-delete, .imagen-view,.imagen-approve {
+.imagen-edit, .imagen-view{
     background: none;
     width: 30px;
     height: 30px;
+}
+
+.imagen-reject:hover, .imagen-approve:hover, .imagen-view:hover {
+    transform: scale(1.5) rotate(20deg);
+    transition: transform 0.5s ease-in-out;
+}
+
+.imagen-delete:hover{
+    transform: scale(4) rotate(50deg);
+    transition: transform 0.5s ease-in-out;
 }
 
 .imagen-edit, .imagen-delete:hover, .imagen-view:hover {
