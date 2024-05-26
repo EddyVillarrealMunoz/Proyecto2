@@ -46,13 +46,21 @@ public class FacturaController {
 
         Factura factura = objectMapper.convertValue(body.get("factura"), Factura.class);
         List<FacturaDetalle> listFacturaDetalles = objectMapper.convertValue(body.get("listFacturaDetalles"), new TypeReference<List<FacturaDetalle>>() {});
-        // Guarda la factura sin los detalles
-        Factura savedFactura = facturaRepository.save(factura);
+        List<FacturaDetalle> savedFacturaDetalles = new ArrayList<>(); // Crea una nueva lista para guardar los detalles de la factura
 
-        System.out.println(listFacturaDetalles);
+        factura = facturaRepository.save(factura); // Guarda la factura antes de guardar los detalles de la factura
 
-        // Recarga la factura desde la base de datos para obtener los detalles actualizados
-        return facturaRepository.findById(savedFactura.getId()).get();
+        for(FacturaDetalle detalle : listFacturaDetalles){
+            FacturaDetalle facturaDetalle = new FacturaDetalle();
+
+            facturaDetalle.setIdProducto(detalle.getIdProducto());
+            facturaDetalle.setCantidad(detalle.getCantidad());
+            FacturaDetalle savedDetalle = facturaDetalleRepository.save(facturaDetalle);
+            savedFacturaDetalles.add(savedDetalle);
+        }
+
+        factura.setListFacturaDetalle(savedFacturaDetalles);
+        return facturaRepository.save(factura);
     }
 
     @GetMapping("/facturas/{id}")
@@ -61,34 +69,4 @@ public class FacturaController {
                 .orElseThrow(() -> new ResourceNotFoundException("Factura not found with id: " + id));
         return ResponseEntity.ok(factura);
     }
-
-    @PutMapping("/facturas/{id}")
-    public ResponseEntity<Factura> updateFactura(@PathVariable Long id, @RequestBody Factura factura) {
-
-        Factura facturaUpdate = facturaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Factura not found with id: " + id));
-
-        facturaUpdate.setDate(factura.getDate());
-        facturaUpdate.setCedulaProveedor(factura.getCedulaProveedor());
-        facturaUpdate.setCedulaCliente(factura.getCedulaCliente());
-        facturaUpdate.setTipoPago(factura.getTipoPago());
-        facturaUpdate.setFinalPrice(factura.getFinalPrice());
-        //facturaUpdate.setListFacturasDetalles(factura.getListFacturasDetalles());
-
-        Factura updatedFactura = facturaRepository.save(facturaUpdate);
-        return ResponseEntity.ok(updatedFactura);
-    }
-
-    @DeleteMapping("/facturas/{id}")
-    public ResponseEntity<Map<String, Boolean>> deleteFactura(@PathVariable Long id) {
-        Factura factura = facturaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Factura not found with id: " + id));
-
-        facturaRepository.delete(factura);
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("deleted", Boolean.TRUE);
-        return ResponseEntity.ok(response);
-    }
-
-
 }
