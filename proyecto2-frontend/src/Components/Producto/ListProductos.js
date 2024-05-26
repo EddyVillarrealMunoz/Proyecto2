@@ -16,6 +16,7 @@ export const ListProductos = () => {
     useEffect(() => {
         ProductoService.getProductos().then((response) => {
             setProductos(response.data);
+            console.log("LisrProduc data:", response.data);
         }).catch((error) => {
             console.log(error);
         });

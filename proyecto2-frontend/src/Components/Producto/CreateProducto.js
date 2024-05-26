@@ -1,21 +1,26 @@
 import React, {useEffect, useState} from 'react';
 import ProductoService from "../../Services/ProductoService";
+import ProveedorService from "../../Services/ProveedorService";
 import {Link, useNavigate, useParams} from "react-router-dom";
-import { NumericFormat } from 'react-number-format';
+import {NumericFormat} from 'react-number-format';
 
 import '../../css/style.css';
 
 export const CreateProducto = ({mode}) => {
-
     //------------------------------------------------------------------------------------------------------------------
     // CONSTANTES
     //------------------------------------------------------------------------------------------------------------------
     const [description, setDescription] = useState('');
+    const [actComercial, setActComercial] = useState('');
     const [measure, setMeasure] = useState('');
     const [price, setPrice] = useState('');
-    const [type, setType] = useState('');
+    const [type, setType] = useState(true); // Cambié a true para evitar problemas con el control del radio
     const [ivaFee, setIvaFee] = useState('');
-    const measures = ['Kilogramos', 'Litros', 'Centímetros', 'Unidades','Paquetes', 'Horas']; // Las medidas disponibles
+
+    const [actividadesComerciales, setActividadesComerciales] = useState([]);
+    const measures = ['Kilogramos', 'Litros', 'Centímetros', 'Unidades', 'Paquetes', 'Horas'];
+
+    const proveedorId = localStorage.getItem('proveedorId');
 
     const navigate = useNavigate();
     const {id} = useParams();
@@ -23,6 +28,7 @@ export const CreateProducto = ({mode}) => {
 
     const [errors, setErrors] = useState({
         description: '',
+        actComercial: '',
         measure: '',
         price: '',
         ivaFee: ''
@@ -32,11 +38,18 @@ export const CreateProducto = ({mode}) => {
         e.preventDefault();
 
         if (validarForm()) {
-            const producto = {description, measure, price, type, ivaFee};
+            const producto = {
+                description,
+                measure,
+                price,
+                type,
+                ivaFee,
+                actComercial: actComercial
+            };
 
             if (id) {
                 try {
-                    const response = await ProductoService.updateProducto(id, producto);
+                    const response = await ProductoService.updateProducto(id);
                     console.log(response.data);
                     navigate('/productos');
                     alert('Producto editado correctamente');
@@ -46,13 +59,15 @@ export const CreateProducto = ({mode}) => {
                 }
             } else {
                 try {
-                    const response = await ProductoService.saveProducto(producto);
+
+                    const response = await ProductoService.saveProducto(producto, actComercial);
+                    console.log('Producto guardado view: ', producto);
                     console.log(response.data);
                     navigate('/productos');
-                    alert('Producto guardado correctamente')
+                    alert('Producto guardado correctamente');
                 } catch (error) {
                     console.error(error);
-                    alert('Hubo un error al guardar el producto');
+                    alert('Hubo un error al guardar el producto' + error);
                 }
             }
         }
@@ -65,15 +80,26 @@ export const CreateProducto = ({mode}) => {
         if (id) {
             ProductoService.getProductoById(id).then((response) => {
                 setDescription(response.data.description);
+                setActComercial(response.data.actComercial);
                 setMeasure(response.data.measure);
                 setPrice(response.data.price);
                 setType(response.data.type);
                 setIvaFee(response.data.ivaFee);
+
+                console.log(response.data);
             }).catch((error) => {
                 console.log(error);
             });
         }
-    }, [id]);
+
+        // Cargar las actividades comerciales siempre que se cargue el componente
+        ProveedorService.getActComercialesByProveedorId(proveedorId).then((response) => {
+            setActividadesComerciales(response.data);
+            console.log(response.data);
+        }).catch((error) => {
+            console.log(error);
+        });
+    }, [id, proveedorId]);
 
     //------------------------------------------------------------------------------------------------------------------
     // FUNCIONES
@@ -89,7 +115,7 @@ export const CreateProducto = ({mode}) => {
     }
 
     function mostrarBotonGuardar() {
-        if (id && mode === 'view'){
+        if (id && mode === 'view') {
             return null;
         } else {
             return <button className={"btn btn-primary me-2"}
@@ -102,7 +128,7 @@ export const CreateProducto = ({mode}) => {
 
         const errorsCopy = {...errors};
 
-        //Validar descripción
+        // Validar descripción
         if (!description || description === "") {
             errorsCopy.description = "La descripción es obligatoria";
             valid = false;
@@ -110,7 +136,15 @@ export const CreateProducto = ({mode}) => {
             errorsCopy.description = "";
         }
 
-        //Validar medida
+        // Validar actividad comercial
+        if (!actComercial || actComercial === "") {
+            errorsCopy.actComercial = "La actividad comercial es obligatoria";
+            valid = false;
+        } else {
+            errorsCopy.actComercial = "";
+        }
+
+        // Validar medida
         if (!measure || measure === "") {
             errorsCopy.measure = "La medida es obligatoria";
             valid = false;
@@ -118,7 +152,7 @@ export const CreateProducto = ({mode}) => {
             errorsCopy.measure = "";
         }
 
-        //Validar precio
+        // Validar precio
         if (!price || price === "") {
             errorsCopy.price = "El precio es obligatorio";
             valid = false;
@@ -129,7 +163,7 @@ export const CreateProducto = ({mode}) => {
             errorsCopy.price = "";
         }
 
-        //Validar IVA
+        // Validar IVA
         if (!ivaFee || ivaFee === "") {
             errorsCopy.ivaFee = "El IVA es obligatorio";
             valid = false;
@@ -176,12 +210,32 @@ export const CreateProducto = ({mode}) => {
                                         name="type"
                                         value="false"
                                         checked={type === false}
-                                        onChange={(e) => setType(e.target.value === "true")}
+                                        onChange={(e) => setType(e.target.value === "false")}
                                         className={`${errors.type ? 'is-invalid' : ''}`}
                                     />
                                     <label htmlFor="Servicio">Servicio</label>
                                 </div>
                                 {errors.type && <div className={"invalid-feedback"}>{errors.type}</div>}
+                            </div>
+                            <div className={"mb-3"}>
+                                <select
+                                    disabled={isDisabled}
+                                    name="actComercial"
+                                    className={`form-control ${errors.actComercial ? 'is-invalid' : ''}`}
+                                    value={actComercial}
+                                    onChange={(e) => setActComercial(e.target.value)}
+                                >
+                                    <option value="">Seleccione actividad comercial</option>
+                                    {actividadesComerciales.map((actividad) => (
+                                        <option
+                                            key={actividad.id}
+                                            value={actividad.id}
+                                        >
+                                            {actividad.id} - {actividad.description}
+                                        </option>
+                                    ))}
+                                </select>
+                                {errors.actComercial && <div className={"invalid-feedback"}>{errors.actComercial}</div>}
                             </div>
                             <div className={"mb-3"}>
                                 <input

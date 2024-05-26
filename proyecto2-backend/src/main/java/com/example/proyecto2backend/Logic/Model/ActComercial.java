@@ -18,10 +18,6 @@ public class ActComercial {
     int id;
     String description;
 
-    // Relación inversa con Producto (si un ActComercial puede tener varios productos)
-    @OneToMany(mappedBy = "actComercial")
-    private List<Producto> productos = new ArrayList<>();
-
     @Override
     public String toString() {
         return "ActComercial{" +

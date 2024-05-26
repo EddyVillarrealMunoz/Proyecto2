@@ -1,5 +1,7 @@
 package com.example.proyecto2backend.Presentation.Controller;
 
+import com.example.proyecto2backend.Data.Repository.ActComercialRepository;
+import com.example.proyecto2backend.Logic.Model.ActComercial;
 import com.example.proyecto2backend.Logic.Model.Producto;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import com.example.proyecto2backend.Data.Repository.ProductoRepository;
@@ -20,21 +22,38 @@ public class ProductoController {
     @Autowired
     private ProductoRepository productoRepository;
 
+    @Autowired
+    private ActComercialRepository actComercialRepository;
+
     @GetMapping("/productos")
     public List<Producto> findAllProductos() {
         return productoRepository.findAll();
     }
 
-    @PostMapping("/productos")
-    public Producto saveProducto(@RequestBody Producto producto) {
-        return productoRepository.save(producto);
-    }
-
     @GetMapping("/productos/{id}")
     public ResponseEntity<Producto> findProductoById(@PathVariable Integer id) {
-        Producto producto = productoRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Producto not found with id: " + id));
+        Producto producto = productoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Producto not found with id: " + id));
         return ResponseEntity.ok(producto);
+    }
+
+    @GetMapping("/productos/actcomerciales/{id}")
+    public ActComercial getActComercialByProductoId(@PathVariable Integer id) {
+        return actComercialRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("ActComercial not found with id: " + id));
+    }
+
+    @PostMapping("/productos")
+    public Producto saveProducto(@RequestBody Producto producto)
+    {
+        System.out.println("#--------------------------------------------------");
+        System.out.println("# Controller Post Producto");
+        System.out.println("# " + producto.toString());
+        System.out.println("# --------------------------------------------------");
+        System.out.println("#--------------------------------------------------");
+        System.out.println("# Controller Act Comercial");
+        System.out.println("# " + producto.getActComerciales());
+        System.out.println("# --------------------------------------------------");
+
+        return productoRepository.save(producto);
     }
 
     @PutMapping("/productos/{id}")

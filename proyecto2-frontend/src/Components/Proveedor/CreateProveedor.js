@@ -14,8 +14,6 @@ export const CreateOrUpdateProveedor = () => {
     const [actComerciales, setActComerciales] = useState([]); //Array que recupera todos los objetos tipo actComercial
     const [selectedActComerciales, setSelectedActComerciales] = useState([]);
 
-    const [actComercial, setActComercial] = useState(null); //Variable que guardará la actComercial seleccionada
-
     const navigate = useNavigate();
     const {idUpdate} = useParams();
 
@@ -71,14 +69,6 @@ export const CreateOrUpdateProveedor = () => {
             console.log(error);
         })
     }, [])
-
-    /*useEffect(() => {
-        ActComercialService.getActComercialById(1).then((response) => {
-            setActComercial(response.data);
-        }).catch((error) => {
-            console.log(error);
-        })
-    },[])*/
 
     const title = () => {
         if (idUpdate) {
@@ -187,26 +177,3 @@ export const CreateOrUpdateProveedor = () => {
 }
 
 export default CreateOrUpdateProveedor;
-
-
-/*
-<div>
-                                    <p>Actividades Comerciales</p>
-                                    {actComerciales.length > 0 ? (
-                                        <select value={actComercial ? actComercial.id : ''}
-                                                onChange={(e) => {
-                                                    const selectedActComercial = actComerciales.find(act => act.id === Number(e.target.value));
-                                                    setActComercial(selectedActComercial);
-                                                }}>
-                                            {actComerciales.map((actComercial) => (
-                                                <option
-                                                    key={actComercial.id}
-                                                    value={actComercial.id}>{actComercial.name}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    ) : (
-                                        <p>Actualmente no existen actividades para elegir</p>
-                                    )}
-                                </div>
- */
