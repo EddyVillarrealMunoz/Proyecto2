@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import { Alert } from 'react-bootstrap'; // Importa el componente Alert de react-bootstrap
 
 import '../../css/style.css';
 import ProveedorService from "../../Services/ProveedorService";
@@ -9,6 +10,8 @@ import waitingImage from '../../images/waiting.png';
 export const ProfileAdmin = () => {
 
     const [proveedores, setProveedores] = useState([]);
+    const [showAlert, setShowAlert] = useState(false); // Estado para manejar la visibilidad de la alerta
+    const [alertMessage, setAlertMessage] = useState(''); // Estado para manejar el mensaje de la alerta
 
     useEffect(() => {
         ProveedorService.getProveedores().then((response) => {
@@ -21,6 +24,11 @@ export const ProfileAdmin = () => {
 
     const handleAccept = (id) => {
         const updatedProveedor = proveedores.find(proveedor => proveedor.id === id);
+        if (!updatedProveedor.actComercial) {
+            setAlertMessage('No se puede aprobar un proveedor sin una actividad comercial asociada'); // Establece el mensaje de la alerta
+            setShowAlert(true); // Muestra la alerta
+            return;
+        }
         updatedProveedor.accepted = true;
 
         ProveedorService.updateProveedor(id, updatedProveedor)
@@ -131,6 +139,7 @@ export const ProfileAdmin = () => {
                     </tbody>
                 </table>
             </div>
+            {showAlert && <Alert variant="danger" onClose={() => setShowAlert(false)} dismissible>{alertMessage}</Alert>} {/* Muestra la alerta si showAlert es true */}
         </div>
     );
 }
