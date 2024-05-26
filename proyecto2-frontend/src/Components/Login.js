@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 
 export const Login = () => {
     //------------------------------------------------------------------------------------------------------------------
@@ -15,7 +14,7 @@ export const Login = () => {
         event.preventDefault();
 
         try {
-            const response = await axios.post('http://localhost:8080/api/v1/login', { id, password });
+            const response = await axios.post('http://localhost:8080/api/v1/login', {id, password});
             const user = response.data;
 
             localStorage.setItem('user', JSON.stringify(user));
@@ -36,26 +35,28 @@ export const Login = () => {
     //------------------------------------------------------------------------------------------------------------------
     return (
         <div className="container">
-            <div className="row justify-content-center">
-                <div className="col-md-6">
-                    <div className="card p-4">
-                        <form onSubmit={handleSubmit}>
-                            <h1 className="card-title text-center">Iniciar sesión</h1>
-                            <div className="mb-3">
-                                <label className="form-label">ID:</label>
-                                <input type="text" className="form-control" value={id} onChange={e => setId(e.target.value)} />
-                            </div>
-                            <div className="mb-3">
-                                <label className="form-label">Contraseña:</label>
-                                <input type="password" className="form-control" value={password} onChange={e => setPassword(e.target.value)} />
-                            </div>
-                            <div className="d-grid gap-2">
-                                <input type="submit" className="btn btn-primary" value="Iniciar sesión" />
-                            </div>
-                        </form>
-                        <div className="text-center mt-3">
-                            <Link to="/save-proveedor" className="btn btn-register">Registrarse</Link>
+            <br/>
+            <br/>
+            <div className='card col-md-6 offset-md-3 offset-md-3'>
+                <h1 className={"text-center card-header"}>Iniciar sesión</h1>
+                <div className={"card-body"}>
+                    <form onSubmit={handleSubmit}>
+                        <div className="mb-3">
+                            <label className="form-label">ID:</label>
+                            <input type="text" className="form-control" value={id}
+                                   onChange={e => setId(e.target.value)}/>
                         </div>
+                        <div className="mb-3">
+                            <label className="form-label">Contraseña:</label>
+                            <input type="password" className="form-control" value={password}
+                                   onChange={e => setPassword(e.target.value)}/>
+                        </div>
+                        <div className="d-grid gap-2">
+                            <input type="submit" className="btn btn-primary" value="Iniciar sesión"/>
+                        </div>
+                    </form>
+                    <div className="text-center mt-3">
+                        <Link to="/save-proveedor" className="btn btn-register">Registrarse</Link>
                     </div>
                 </div>
             </div>

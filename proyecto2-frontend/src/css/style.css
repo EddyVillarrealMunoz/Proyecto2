@@ -31,8 +31,7 @@ header {
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    padding: 20px;
-    max-height: 50px;
+    max-height: 75px;
     overflow: hidden;
 
 }
@@ -82,9 +81,6 @@ footer button {
     border-radius: 0.5em;
     border: none;
     font-weight: bold;
-}
-footer button:hover {
-    cursor: pointer;
 }
 
 .error {

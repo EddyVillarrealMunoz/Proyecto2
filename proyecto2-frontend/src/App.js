@@ -26,8 +26,9 @@ function App() {
     <div >
         <BrowserRouter>
             {<Header/>}
+            <div className={"container min-vh-100"}>
                 <Routes>
-                    <Route exact path = '/'                           element = {< IndexComponent />}> </Route>
+                    <Route exact path = '/'                           element = {< Login />}> </Route>
                     <Route exact path = '/login'                      element = {< Login />}> </Route>
                     <Route exact path = '/logout'                     element = {< Logout />}> </Route>
                     <Route exact path = '/save-proveedor'             element = {< CreateProveedor/>}></Route>
@@ -53,6 +54,7 @@ function App() {
 
                     <Route exact path = '/profile-proveedor/:id'      element = {< ProfileProveedor/>}></Route>
                 </Routes>
+            </div>
             {<Footer/>}
         </BrowserRouter>
     </div>
