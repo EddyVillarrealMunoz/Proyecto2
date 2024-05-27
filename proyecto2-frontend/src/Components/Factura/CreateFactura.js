@@ -74,6 +74,7 @@ export const CreateFactura = () => {
 
         try {
             await FacturaService.saveFactura(factura, facturaDetalle);
+            alert('Factura creada correctamente');
             navigate('/facturas');
         } catch (error) {
             console.error(error);

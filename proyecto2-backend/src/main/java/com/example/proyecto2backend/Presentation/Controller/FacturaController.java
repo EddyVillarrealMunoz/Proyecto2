@@ -2,7 +2,9 @@ package com.example.proyecto2backend.Presentation.Controller;
 
 import com.example.proyecto2backend.Data.Repository.FacturaDetalleRepository;
 import com.example.proyecto2backend.Data.Repository.FacturaRepository;
+import com.example.proyecto2backend.Data.Repository.ProveedorRepository;
 import com.example.proyecto2backend.Logic.Model.FacturaDetalle;
+import com.example.proyecto2backend.Logic.Model.Producto;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -27,9 +29,12 @@ public class FacturaController {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private ProveedorRepository proveedorRepository;
+
     @GetMapping("/facturas")
-    public List<Factura> findAllFacturas() {
-        return facturaRepository.findAll();
+    public List<Factura> findAllFacturas(@RequestParam(required = false) String proveedorId) {
+        return facturaRepository.findFacturasByProveedorId(proveedorId);
     }
 
     @PostMapping("/facturas")
