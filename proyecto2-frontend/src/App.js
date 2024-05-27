@@ -18,6 +18,7 @@ import Footer from "./Components/Footer";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import ListFacturas from "./Components/Factura/ListFactura";
 import CreateFactura from "./Components/Factura/CreateFactura";
+import FacturaCompleta from "./Components/Factura/FacturaCompleta";
 
 function App() {
   return (
@@ -48,7 +49,7 @@ function App() {
                     <Route exact path = '/clientes'                   element = {< ListClientes/>}></Route>
 
                     <Route exact path = '/facturas'                   element=  {< ListFacturas/>}></Route>
-                    <Route exact path = '/facturas/view/:id'          element=  {< CreateFactura/>}></Route>
+                    <Route exact path=  '/facturas/view/:idP'         element= {< FacturaCompleta mode={"view"}/>}></Route>
                     <Route exact path = '/save-facturas'              element=  {< CreateFactura/>}></Route>
                 </Routes>
             </div>

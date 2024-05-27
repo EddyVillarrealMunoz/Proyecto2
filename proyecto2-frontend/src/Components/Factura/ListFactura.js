@@ -114,14 +114,7 @@ export const ListFacturas = () => {
     }, [navigate, proveedorId]);
 
 
-    const handlePDFGeneration = (facturaId) => {
-        generatePDF(facturas.find(factura => factura.id === facturaId));
-    };
 
-    const handleXMLGeneration = (facturaId) => {
-        const facturaData = facturas.find(factura => factura.id === facturaId);
-        generateXML(facturaData);
-    };
 
     //------------------------------------------------------------------------------------------------------------------
     // FUNCIONES
@@ -130,6 +123,19 @@ export const ListFacturas = () => {
         navigate("/save-facturas");
     }
 
+    function viewFactura(idP) {
+        console.log("Ver Factura con id: ", idP);
+        navigate(`/facturas/view/${idP}`); // Utiliza navigate en lugar de navigator
+    }
+
+    const handlePDFGeneration = (facturaId) => {
+        generatePDF(facturas.find(factura => factura.id === facturaId));
+    };
+
+    const handleXMLGeneration = (facturaId) => {
+        const facturaData = facturas.find(factura => factura.id === facturaId);
+        generateXML(facturaData);
+    };
     //------------------------------------------------------------------------------------------------------------------
     // RENDER
     //------------------------------------------------------------------------------------------------------------------
@@ -148,6 +154,7 @@ export const ListFacturas = () => {
                     <th>Tipo_Pago</th>
                     <th>Precio_Final</th>
                     <th>Generar PDF/XML</th>
+                    <th>Factura Completa</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -169,6 +176,13 @@ export const ListFacturas = () => {
                                     <button className="xml-button" onClick={() => handleXMLGeneration(factura.id)}>
                                         <img src={xmlIcon} alt="XML Icon"/>
                                     </button>
+                                </td>
+                                <td>
+                                    <div className={"text-center"}>
+                                        <button className="btn btn-info m-1"
+                                                onClick={() => viewFactura(factura.id)}>Ver
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                     )
