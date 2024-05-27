@@ -22,15 +22,18 @@ export const CreateFactura = () => {
 
     const tipo_pago = ['Tarjeta', 'Efectivo'];
     const navigate = useNavigate();
+    const proveedorId = localStorage.getItem('proveedorId');
 
     const fetchData = useCallback(async () => {
         try {
             const [productosData, clientesData] = await Promise.all([
-                ProductoService.getProductos(),
+                ProductoService.getProductos(proveedorId),
                 ClienteService.getClientes()
             ]);
             setProductos(productosData.data);
             setClientes(clientesData.data);
+            console.log("Productos", productosData.data);
+            console.log("Clientes",clientesData.data);
         } catch (error) {
             console.log(error);
         }
