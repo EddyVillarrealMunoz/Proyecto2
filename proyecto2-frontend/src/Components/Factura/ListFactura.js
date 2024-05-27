@@ -102,9 +102,8 @@ export const ListFacturas = () => {
     //------------------------------------------------------------------------------------------------------------------
     // FUNCIONES
     //------------------------------------------------------------------------------------------------------------------
-    function addCliente() {
-        console.log("Agregar Cliente");
-        navigate("/save-clientes");
+    function addFactura() {
+        navigate("/save-facturas");
     }
 
     //------------------------------------------------------------------------------------------------------------------
@@ -114,7 +113,7 @@ export const ListFacturas = () => {
         <div className='tabla-productos'>
             <br/>
             <h1>Facturas</h1>
-            <button className="btn btn-primary mb-1 float-end" onClick={addCliente}>Nueva Facturas</button>
+            <button className="btn btn-primary mb-1 float-end" onClick={addFactura}>Nueva Facturas</button>
             <table>
                 <thead>
                     <tr>
