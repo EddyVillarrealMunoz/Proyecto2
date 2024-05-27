@@ -196,7 +196,7 @@ export const CreateProducto = ({mode}) => {
                                         name="type"
                                         value="false"
                                         checked={type === false}
-                                        onChange={(e) => setType(e.target.value === "false")}
+                                        onChange={(e) => setType(e.target.value === "true")}
                                         className={`${errors.type ? 'is-invalid' : ''}`}
                                     />
                                     <label htmlFor="Servicio">Servicio</label>

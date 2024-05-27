@@ -9,13 +9,14 @@ import pdfIcon from '../../images/pdf.png';
 import xmlIcon from '../../images/xml.png';
 
 export const ListFacturas = () => {
+    //------------------------------------------------------------------------------------------------------------------
+    // CONSTANTES
+    //------------------------------------------------------------------------------------------------------------------
     const [facturas, setFacturas] = useState([]);
     const navigate = useNavigate();
 
-
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
-
 
     const generatePDF = (facturaData) => {
         const doc = new jsPDF();
@@ -29,7 +30,6 @@ export const ListFacturas = () => {
 
         doc.save('factura_numero' + facturaData.id + '.pdf');
     };
-
 
     const generateXML = (facturaData) => {
 
@@ -56,6 +56,9 @@ export const ListFacturas = () => {
         document.body.removeChild(link);
     };
 
+    //------------------------------------------------------------------------------------------------------------------
+    // Validar credenciales / Obtener data
+    //------------------------------------------------------------------------------------------------------------------
     useEffect(() =>
     {
         // Obtener la información del usuario y id del proveedor que ha ingresado a este componente
@@ -96,47 +99,59 @@ export const ListFacturas = () => {
         generateXML(facturaData);
     };
 
+    //------------------------------------------------------------------------------------------------------------------
+    // FUNCIONES
+    //------------------------------------------------------------------------------------------------------------------
+    function addCliente() {
+        console.log("Agregar Cliente");
+        navigate("/save-clientes");
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+    // RENDER
+    //------------------------------------------------------------------------------------------------------------------
     return (
         <div className='tabla-productos'>
-            <h2>Facturas</h2>
+            <br/>
+            <h1>Facturas</h1>
+            <button className="btn btn-primary mb-1 float-end" onClick={addCliente}>Nueva Facturas</button>
             <table>
                 <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Fecha</th>
-                    <th>Proveedor</th>
-                    <th>Cliente</th>
-                    <th>Tipo_Pago</th>
-                    <th>Precio_Final</th>
-                    <th>Generar PDF/XML</th>
-                </tr>
+                    <tr>
+                        <th>ID</th>
+                        <th>Fecha</th>
+                        <th>Proveedor</th>
+                        <th>Cliente</th>
+                        <th>Tipo_Pago</th>
+                        <th>Precio_Final</th>
+                        <th>Generar PDF/XML</th>
+                    </tr>
                 </thead>
                 <tbody>
-                {
-                    facturas.map(
-                        factura =>
-                            <tr key={factura.id}>
-                                <td>{factura.id}</td>
-                                <td>{factura.date}</td>
-                                <td>{factura.cedulaProveedor}</td>
-                                <td>{factura.cedulaCliente}</td>
-                                <td>{factura.tipoPago}</td>
-                                <td>{factura.finalPrice}</td>
-                                <td>
-                                    {/* Agrega las clases de los botones de PDF y XML */}
-                                    <button className="pdf-button" onClick={() => handlePDFGeneration(factura.id)}>
-                                        <img src={pdfIcon} alt="PDF Icon" />
-                                    </button>
-                                    <button className="xml-button" onClick={() => handleXMLGeneration(factura.id)}>
-                                        <img src={xmlIcon} alt="XML Icon" />
-                                    </button>
-                                </td>
-                            </tr>
-                    )
-                }
+                    {
+                        facturas.map(
+                            factura =>
+                                <tr key={factura.id}>
+                                    <td>{factura.id}</td>
+                                    <td>{factura.date}</td>
+                                    <td>{factura.cedulaProveedor}</td>
+                                    <td>{factura.cedulaCliente}</td>
+                                    <td>{factura.tipoPago}</td>
+                                    <td>{factura.finalPrice}</td>
+                                    <td>
+                                        {/* Agrega las clases de los botones de PDF y XML */}
+                                        <button className="pdf-button" onClick={() => handlePDFGeneration(factura.id)}>
+                                            <img src={pdfIcon} alt="PDF Icon"/>
+                                        </button>
+                                        <button className="xml-button" onClick={() => handleXMLGeneration(factura.id)}>
+                                            <img src={xmlIcon} alt="XML Icon"/>
+                                        </button>
+                                    </td>
+                                </tr>
+                        )
+                    }
                 </tbody>
             </table>
-            <Link to="/save-facturas">Agregar Factura</Link>
         </div>
     );
 }
