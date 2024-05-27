@@ -30,7 +30,6 @@ public class ProveedorController {
     public Proveedor saveProveedor(@RequestBody Proveedor proveedor) {
         System.out.println("Controller Post Proveedor" + proveedor.toString());
 
-
         return proveedorRepository.save(proveedor);
     }
 

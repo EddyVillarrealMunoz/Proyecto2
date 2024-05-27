@@ -1,5 +1,8 @@
 package com.example.proyecto2backend.Logic.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,6 +16,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "actividades_comerciales")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class ActComercial {
     @Id
     int id;

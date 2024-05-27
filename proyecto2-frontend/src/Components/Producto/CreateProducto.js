@@ -37,34 +37,23 @@ export const CreateProducto = ({mode}) => {
     const createOrUpdateProducto = async (e) => {
         e.preventDefault();
 
-        if (validarForm()) {
-            const producto = {
-                description,
-                measure,
-                price,
-                type,
-                ivaFee,
-                actComercial: actComercial
-            };
-
+        if (validarForm())
+        {
+            const producto = {description, measure, price, type, ivaFee, actComercial: actComercial.id};
             if (id) {
                 try {
-                    const response = await ProductoService.updateProducto(id);
+                    const response = await ProductoService.updateProducto(id, producto, proveedorId, actComercial);
                     console.log(response.data);
                     navigate('/productos');
                     alert('Producto editado correctamente');
                 } catch (error) {
                     console.error(error);
-                    alert('Hubo un error al editar el producto');
+                    alert('Hubo un error al editar el producto' + error);
                 }
             } else {
                 try {
-
-                    const response = await ProductoService.saveProducto(producto, actComercial);
-                    console.log('Producto guardado view: ', producto);
-                    console.log(response.data);
+                    const response = await ProductoService.saveProducto(producto, proveedorId, actComercial);
                     navigate('/productos');
-                    alert('Producto guardado correctamente');
                 } catch (error) {
                     console.error(error);
                     alert('Hubo un error al guardar el producto' + error);
@@ -80,13 +69,11 @@ export const CreateProducto = ({mode}) => {
         if (id) {
             ProductoService.getProductoById(id).then((response) => {
                 setDescription(response.data.description);
-                setActComercial(response.data.actComercial);
+                setActComercial(response.data.actComercial.id);
                 setMeasure(response.data.measure);
                 setPrice(response.data.price);
                 setType(response.data.type);
                 setIvaFee(response.data.ivaFee);
-
-                console.log(response.data);
             }).catch((error) => {
                 console.log(error);
             });
@@ -95,7 +82,6 @@ export const CreateProducto = ({mode}) => {
         // Cargar las actividades comerciales siempre que se cargue el componente
         ProveedorService.getActComercialesByProveedorId(proveedorId).then((response) => {
             setActividadesComerciales(response.data);
-            console.log(response.data);
         }).catch((error) => {
             console.log(error);
         });

@@ -13,8 +13,6 @@ import CreateCliente from "./Components/Cliente/CreateCliente";
 
 import Login from "./Components/Login";
 import Logout from "./Components/Logout";
-
-import IndexComponent from "./Components/IndexComponent";
 import Header from "./Components/Header";
 import Footer from "./Components/Footer";
 import {BrowserRouter, Route, Routes} from "react-router-dom";

@@ -4,13 +4,18 @@ const PRODUCTO_BASE_REST_API_URL = "http://localhost:8080/api/v1/productos";
 
 class ProductoService {
 
-    getProductos() {
-        return axios.get(PRODUCTO_BASE_REST_API_URL);
+    getProductos(proveedorId) {
+        return axios.get(`${PRODUCTO_BASE_REST_API_URL}?proveedorId=${proveedorId}`);
     }
 
-    saveProducto(producto) {
-        console.log("ProductoService: ", producto)
-        return axios.post(PRODUCTO_BASE_REST_API_URL, producto);
+    saveProducto(producto, proveedorId, actComercialId) {
+        console.log("ProductoService: ", producto);
+        return axios.post(`${PRODUCTO_BASE_REST_API_URL}`, producto, {
+            params: {
+                proveedorId: proveedorId,
+                actComercialId: actComercialId
+            }
+        });
     }
 
     getProductoById(productoId) {
@@ -21,14 +26,18 @@ class ProductoService {
         return axios.get(PRODUCTO_BASE_REST_API_URL + '/actcomercial' + '/' + productoId);
     }
 
-    updateProducto(id, producto) {
-        return axios.put(PRODUCTO_BASE_REST_API_URL + '/' + id, producto);
+    updateProducto(id, producto, proveedorId, actComercialId) {
+        return axios.put(`${PRODUCTO_BASE_REST_API_URL}/${id}`, producto, {
+            params: {
+                proveedorId: proveedorId,
+                actComercialId: actComercialId
+            }
+        });
     }
 
     deleteProducto(productoId) {
         return axios.delete(PRODUCTO_BASE_REST_API_URL + '/' + productoId);
     }
-
 }
 
 export default new ProductoService();

@@ -1,5 +1,6 @@
 package com.example.proyecto2backend.Logic.Model;
 
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 
 import lombok.AllArgsConstructor;
@@ -18,6 +19,7 @@ import java.util.Map;
 @Data
 @Entity
 @Table(name = "proveedores")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Proveedor {
 
     @Id
@@ -33,19 +35,19 @@ public class Proveedor {
 
     private String rol = "PRO";
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "proveedores_clientes",
-            joinColumns = @JoinColumn(name = "proveedor_id"),
-            inverseJoinColumns = @JoinColumn(name = "cliente_id")
-    )
-    private List<Cliente> clientes = new ArrayList<>();
-
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "proveedor_actividades_comerciales",
             joinColumns = @JoinColumn(name = "proveedor_id"),
             inverseJoinColumns = @JoinColumn(name = "act_comercial_id")
     )
     private List<ActComercial> actComerciales = new ArrayList<>();
+
+    @OneToMany(mappedBy = "proveedor", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonManagedReference
+    private List<Cliente> clientes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "proveedor", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonManagedReference
+    private List<Producto> productos = new ArrayList<>();
 }

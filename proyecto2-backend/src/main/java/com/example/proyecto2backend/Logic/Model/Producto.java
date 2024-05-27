@@ -1,5 +1,6 @@
 package com.example.proyecto2backend.Logic.Model;
 
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -12,6 +13,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "productos")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Producto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,11 +37,12 @@ public class Producto {
     @Column(name = "type")
     private Boolean type;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "producto_actividades_comerciales",
-            joinColumns = @JoinColumn(name = "producto_id"),
-            inverseJoinColumns = @JoinColumn(name = "act_comercial_id")
-    )
-    private List<ActComercial> actComerciales = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "act_comercial_id", nullable = true)
+    private ActComercial actComercial;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "proveedor_id")
+    @JsonBackReference
+    private Proveedor proveedor;
 }

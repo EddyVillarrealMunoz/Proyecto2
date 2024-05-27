@@ -9,12 +9,13 @@ export const ListProductos = () => {
     //------------------------------------------------------------------------------------------------------------------
     const [productos, setProductos] = useState([]);
     const navigator = useNavigate();
+    const proveedorId = localStorage.getItem('proveedorId');
 
     //------------------------------------------------------------------------------------------------------------------
     // Obtener los productos
     //------------------------------------------------------------------------------------------------------------------
     useEffect(() => {
-        ProductoService.getProductos().then((response) => {
+        ProductoService.getProductos(proveedorId).then((response) => {
             setProductos(response.data);
             console.log("LisrProduc data:", response.data);
         }).catch((error) => {
@@ -34,8 +35,9 @@ export const ListProductos = () => {
     function removeProducto(id) {
         console.log("Eliminar producto con id: ", id);
 
-        ProductoService.deleteProducto(id).then(() => {
-            ProductoService.getProductos().then((response) => {
+         ProductoService.deleteProducto(id).then(() =>
+        {
+            ProductoService.getProductos(proveedorId).then((response) => {
                 setProductos(response.data);
             }).catch((error) => {
                 console.log(error);

@@ -1,5 +1,6 @@
 package com.example.proyecto2backend.Logic.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,4 +19,9 @@ public class Cliente {
     private String direccion;
     private String telefono;
     private String email;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "proveedor_id")
+    @JsonBackReference
+    private Proveedor proveedor;
 }
