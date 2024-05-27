@@ -128,6 +128,13 @@ export const ListFacturas = () => {
         navigate(`/facturas/view/${idP}`); // Utiliza navigate en lugar de navigator
     }
 
+    const handleVerClick = (facturaId) => {
+        // Guarda el ID de la factura en el localStorage
+        localStorage.setItem('facturaId', facturaId);
+        // Navega a la página FacturaCompleta
+        navigate(`/facturas/view/${facturaId}`);
+    };
+
     const handlePDFGeneration = (facturaId) => {
         generatePDF(facturas.find(factura => factura.id === facturaId));
     };
@@ -180,7 +187,7 @@ export const ListFacturas = () => {
                                 <td>
                                     <div className={"text-center"}>
                                         <button className="btn btn-info m-1"
-                                                onClick={() => viewFactura(factura.id)}>Ver
+                                                onClick={() => handleVerClick(factura.id)}>Ver
                                         </button>
                                     </div>
                                 </td>

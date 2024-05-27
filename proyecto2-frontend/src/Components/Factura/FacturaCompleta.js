@@ -4,18 +4,42 @@ import { useNavigate } from 'react-router-dom';
 import facturaImage from "../../images/factura.png";
 
 const FacturaCompleta = ({ idP }) => {
-    const [factura, setFactura] = useState([]);
-    const [listFacturaDetalle, setlistFacturaDetalle] = useState([]);
+    const [factura, setFactura] = useState(null);
+    const [cliente, setCliente] = useState(null);
+    const [listFacturaDetalles, setListFacturaDetalles] = useState([]); // Cambiado el nombre de la variable
     const facturaId = localStorage.getItem('facturaId');
     const navigate = useNavigate();
 
     useEffect(() => {
-        FacturaService.getFacturaById(facturaId).then((response) => {
-            setFactura(response.data);
-        }).catch((error) => {
-            console.log(error);
-        });
+        if (facturaId) {
+            FacturaService.getFacturaById(facturaId)
+                .then((response) => {
+                    setFactura(response.data);
 
+                    FacturaService.getClienteById(response.data.cedulaCliente)
+                        .then(cliente => {
+                            setCliente(cliente);
+                        })
+                        .catch(error => {
+                            console.error("Error al obtener los datos del cliente:", error);
+                        });
+
+                    const detallesPromises = response.data.listFacturaDetalle.map(detalle => {
+                        return FacturaService.getProductoById(detalle.idProducto);
+                    });
+
+                    Promise.all(detallesPromises)
+                        .then(productos => {
+                            setListFacturaDetalles(productos);
+                        })
+                        .catch(error => {
+                            console.error("Error al obtener los datos de los productos:", error);
+                        });
+                })
+                .catch((error) => {
+                    console.error("Error al obtener la factura:", error);
+                });
+        }
     }, [facturaId]);
 
     return (
@@ -26,11 +50,12 @@ const FacturaCompleta = ({ idP }) => {
                         <img className="logoHome" src={facturaImage} alt=""/>
                         <div id="informacion-cliente">
                             <h3>Cliente</h3>
-                            <p>{factura.cedulaCliente}</p>
-                            {factura.cedulaCliente && (
+                            <p>{cliente ? cliente.cedulaCliente : 'Cargando...'}</p>
+                            {cliente && (
                                 <>
-                                    <p>Teléfono: {factura.cedulaCliente.telefono}</p>
-                                    <p>Email: {factura.cedulaCliente.email}</p>
+                                    <p>Nombre Completo: {cliente.name}</p>
+                                    <p>Teléfono: {cliente.telefono}</p>
+                                    <p>Email: {cliente.email}</p>
                                 </>
                             )}
                         </div>
@@ -38,7 +63,7 @@ const FacturaCompleta = ({ idP }) => {
                             <h3>Factura</h3>
                             <p>Número: {factura.id}</p>
                             <p>Fecha: {factura.date}</p>
-                            <p>Pago: {factura.tipoPago}</p>
+                            <p>Método de Pago: {factura.tipoPago}</p>
                         </div>
                     </div>
                     <table id="tabla-productos">
@@ -52,13 +77,13 @@ const FacturaCompleta = ({ idP }) => {
                         </tr>
                         </thead>
                         <tbody>
-                        {listFacturaDetalle.map(detalle => (
-                            <tr key={detalle.id}>
-                                <td>{detalle.idProducto}</td>
-                                <td>{detalle.cantidad}</td>
-                                <td>{detalle.idProducto.description}</td>
-                                <td>{detalle.idProducto.price}</td>
-                                <td>{detalle.idProducto.ivaFee}</td>
+                        {listFacturaDetalles.map((detalle, index) => (
+                            <tr key={index}>
+                                <td>{detalle.id}</td>
+                                <td>{factura.listFacturaDetalle[index].cantidad}</td>
+                                <td>{detalle.description}</td>
+                                <td>{detalle.price}</td>
+                                <td>{detalle.ivaFee}</td>
                             </tr>
                         ))}
                         </tbody>
@@ -78,4 +103,3 @@ const FacturaCompleta = ({ idP }) => {
 }
 
 export default FacturaCompleta;
-

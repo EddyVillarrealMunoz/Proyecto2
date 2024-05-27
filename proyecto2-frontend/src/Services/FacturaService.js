@@ -43,6 +43,24 @@ class FacturaService {
             });
     }
 
+    getProductoById(productId) {
+        return axios.get(`http://localhost:8080/api/v1/productos/${productId}`)
+            .then(response => response.data)
+            .catch(error => {
+                console.error("Error al obtener los datos del producto:", error);
+                return null;
+            });
+    }
+
+    getClienteById(clienteId) {
+        return axios.get(`http://localhost:8080/api/v1/clientes/${clienteId}`)
+            .then(response => response.data)
+            .catch(error => {
+                console.error("Error al obtener los datos del cliente:", error);
+                return null;
+            });
+    }
+
 }
 
 export default new FacturaService;
