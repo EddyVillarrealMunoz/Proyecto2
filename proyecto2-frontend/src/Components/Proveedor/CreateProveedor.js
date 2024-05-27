@@ -33,9 +33,9 @@ export const CreateOrUpdateProveedor = () => {
         if (idUpdate) {
             try {
                 const response = await ProveedorService.updateProveedor(idUpdate, proveedor);
-                console.log(response.data);
-                alert('Proveedor creado correctamente');
-                navigate('/login');
+                console.log("Update",response.data);
+                alert('Proveedor actualizado correctamente');
+                navigate(`/profile-proveedor/${idUpdate}`);
             } catch (error) {
                 console.error(error);
                 alert('Hubo un error al editar el proveedor');
@@ -55,23 +55,34 @@ export const CreateOrUpdateProveedor = () => {
 
     const title = () => {
         if (idUpdate) {
-            return <h1 className={"text-center card-header"}>Actualizar Proveedor {id}</h1>;
+            return <h1 className={"text-center card-header"}>Actualizar Proveedor</h1>;
         }
         return <h1 className={"text-center card-header"}>Registro Proveedor</h1>;
     }
+
     //------------------------------------------------------------------------------------------------------------------
     // USE EFFECT
     //------------------------------------------------------------------------------------------------------------------
-    useEffect(() => {
-        ProveedorService.getProveedorById(idUpdate).then((response) => {
-            setId(response.data.id);
-            setName(response.data.name);
-            setEmail(response.data.email);
-            setPassword(response.data.password);
-        }).catch((error) => {
-            console.log(error);
-        })
-    }, [])
+    useEffect(() =>
+    {
+        if (idUpdate) {
+            ProveedorService.getProveedorById(idUpdate).then((response) => {
+                setId(response.data.id);
+                setName(response.data.name);
+                setEmail(response.data.email);
+                setPassword(response.data.password);
+            }).catch((error) => {
+                console.log(error);
+            });
+
+            // Cargar las actividades comerciales del proveedor
+            ProveedorService.getActComercialesByProveedorId(idUpdate).then((response) => {
+                setSelectedActComerciales(response.data.map(act => act.id));
+            }).catch((error) => {
+                console.log(error);
+            });
+        }
+    }, [idUpdate])
 
     useEffect(() => {
         ActComercialService.getActComerciales().then((response) => {
@@ -80,6 +91,17 @@ export const CreateOrUpdateProveedor = () => {
             console.log(error);
         })
     }, [])
+
+    //------------------------------------------------------------------------------------------------------------------
+    // FUNCIONES
+    //------------------------------------------------------------------------------------------------------------------
+    function botonVolver() {
+        if (idUpdate) {
+            navigate(`/profile-proveedor/${idUpdate}`);
+        } else {
+            navigate('/login');
+        }
+    }
 
     //------------------------------------------------------------------------------------------------------------------
     // RENDER
@@ -172,7 +194,7 @@ export const CreateOrUpdateProveedor = () => {
                             <button className='btn btn-success' onClick={(e) => saveOrUpdateProveedor(e)}>Guardar
                             </button>
                             &nbsp;&nbsp;
-                            <Link to='/login' className='btn btn-secondary'>Volver</Link>
+                            <button className='btn btn-secondary' onClick={botonVolver}>Volver</button>
                         </form>
                     </div>
                 </div>

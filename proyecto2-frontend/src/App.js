@@ -32,6 +32,7 @@ function App() {
                     <Route exact path = '/save-proveedor'             element = {< CreateProveedor/>}></Route>
                     <Route exact path = '/update-proveedor/:idUpdate' element = {< CreateProveedor/>}></Route>
                     <Route exact path = '/proveedor-profile/'         element = {< ProfileProveedor/>}></Route>
+                    <Route exact path = '/profile-proveedor/:id'      element = {< ProfileProveedor/>}></Route>
 
                     <Route exact path = '/admin-profile/'             element = {< AdminProfile/>}></Route>
 
@@ -49,8 +50,6 @@ function App() {
                     <Route exact path = '/facturas'                   element=  {< ListFacturas/>}></Route>
                     <Route exact path = '/facturas/view/:id'          element=  {< CreateFactura/>}></Route>
                     <Route exact path = '/save-facturas'              element=  {< CreateFactura/>}></Route>
-
-                    <Route exact path = '/profile-proveedor/:id'      element = {< ProfileProveedor/>}></Route>
                 </Routes>
             </div>
             {<Footer/>}

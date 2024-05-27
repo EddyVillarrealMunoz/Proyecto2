@@ -8,12 +8,16 @@ class ProveedorService {
         return axios.get(PROVEEDOR_BASE_REST_API_URL);
     }
 
-    saveProveedor(proveedor) {
-        return axios.post(PROVEEDOR_BASE_REST_API_URL, proveedor);
-    }
-
     getProveedorById(proveedorId) {
         return axios.get(PROVEEDOR_BASE_REST_API_URL + '/' + proveedorId);
+    }
+
+    getActComercialesByProveedorId(proveedorId) {
+        return axios.get(PROVEEDOR_BASE_REST_API_URL + '/actcomerciales' + '/' + proveedorId);
+    }
+
+    saveProveedor(proveedor) {
+        return axios.post(PROVEEDOR_BASE_REST_API_URL, proveedor);
     }
 
     updateProveedor(id, proveedor) {
@@ -22,10 +26,6 @@ class ProveedorService {
 
     deleteProveedor(proveedorId) {
         return axios.delete(PROVEEDOR_BASE_REST_API_URL + '/' + proveedorId);
-    }
-
-    getActComercialesByProveedorId(proveedorId) {
-        return axios.get(PROVEEDOR_BASE_REST_API_URL + '/actcomerciales' + '/' + proveedorId);
     }
 }
 
