@@ -41,4 +41,6 @@ public class Factura {
             inverseJoinColumns = @JoinColumn(name = "facturaDetalle_id")
     )
     private List<FacturaDetalle> listFacturaDetalle = new ArrayList<>();
+
+    
 }
