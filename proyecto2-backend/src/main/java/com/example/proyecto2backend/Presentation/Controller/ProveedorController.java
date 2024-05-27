@@ -31,8 +31,6 @@ public class ProveedorController {
     {
         Proveedor proveedor = proveedorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Proveedor not found with id: " + id));
-
-        System.out.println("GET Proveedor: " + proveedor.toString());
         return ResponseEntity.ok(proveedor);
     }
 
@@ -46,8 +44,6 @@ public class ProveedorController {
 
     @PostMapping("/proveedores")
     public Proveedor saveProveedor(@RequestBody Proveedor proveedor) {
-        System.out.println("Controller Post Proveedor" + proveedor.toString());
-
         return proveedorRepository.save(proveedor);
     }
 

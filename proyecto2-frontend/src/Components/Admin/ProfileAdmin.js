@@ -1,17 +1,19 @@
 import React, {useEffect, useState} from 'react';
-import { Alert } from 'react-bootstrap'; // Importa el componente Alert de react-bootstrap
+import { Alert, Modal, Button } from 'react-bootstrap';
 
 import '../../css/style.css';
 import ProveedorService from "../../Services/ProveedorService";
 import approveImage from '../../images/approve.png';
-import rejectImage from '../../images/delete.png';
 import waitingImage from '../../images/waiting.png';
+import rejectImage from '../../images/delete.png';
 
 export const ProfileAdmin = () => {
 
     const [proveedores, setProveedores] = useState([]);
-    const [showAlert, setShowAlert] = useState(false); // Estado para manejar la visibilidad de la alerta
-    const [alertMessage, setAlertMessage] = useState(''); // Estado para manejar el mensaje de la alerta
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
+    const [showModal, setShowModal] = useState(false);
+    const [modalProveedor, setModalProveedor] = useState(null);
 
     useEffect(() => {
         ProveedorService.getProveedores().then((response) => {
@@ -24,18 +26,24 @@ export const ProfileAdmin = () => {
 
     const handleAccept = (id) => {
         const updatedProveedor = proveedores.find(proveedor => proveedor.id === id);
-        if (!updatedProveedor.actComercial) {
-            setAlertMessage('No se puede aprobar un proveedor sin una actividad comercial asociada'); // Establece el mensaje de la alerta
-            setShowAlert(true); // Muestra la alerta
+        if (!updatedProveedor.actComerciales || updatedProveedor.actComerciales.length === 0) {
+            setAlertMessage('No se puede aprobar un proveedor sin una actividad comercial asociada');
+            setShowAlert(true);
             return;
         }
         updatedProveedor.accepted = true;
 
         ProveedorService.updateProveedor(id, updatedProveedor)
             .then(response => {
-                setProveedores(proveedores.map(proveedor =>
-                    proveedor.id === id ? updatedProveedor : proveedor
-                ));
+                ProveedorService.getActComercialesByProveedorId(id)
+                    .then(actComercialesResponse => {
+                        setProveedores(proveedores.map(proveedor =>
+                            proveedor.id === id ? {...updatedProveedor, actComerciales: actComercialesResponse.data} : proveedor
+                        ));
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
             })
             .catch(error => {
                 console.log(error);
@@ -67,6 +75,15 @@ export const ProfileAdmin = () => {
             });
     }
 
+    const handleOpenModal = (proveedor) => {
+        setModalProveedor(proveedor);
+        setShowModal(true);
+    }
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+    }
+
     return (
         <div className='tabla-administrador'>
             <h2>Proveedores</h2>
@@ -88,13 +105,21 @@ export const ProfileAdmin = () => {
                 </thead>
                 <tbody>
                 {
-                    proveedores.map(
+                    proveedores.map (
                         proveedor =>
                             <tr key={proveedor.id}>
                                 <td>{proveedor.id}</td>
                                 <td>{proveedor.name}</td>
                                 <td>{proveedor.email}</td>
-                                <td>{proveedor.actComercial ? proveedor.actComercial.name : 'No especificado'}</td>
+                                <td>
+                                    {
+                                        proveedor.actComerciales && proveedor.actComerciales.length > 0 ? (
+                                            <button onClick={() => handleOpenModal(proveedor)}>
+                                                Mostrar
+                                            </button>
+                                        ) : 'No registra'
+                                    }
+                                </td>
                                 <td style={{backgroundColor: proveedor.accepted ? 'lightgreen' : 'lightcoral'}}>
                                     {proveedor.accepted ? 'Aprobado' : 'En espera'}
                                 </td>
@@ -136,7 +161,21 @@ export const ProfileAdmin = () => {
                 }
                 </tbody>
             </table>
-            {showAlert && <Alert variant="danger" onClose={() => setShowAlert(false)} dismissible>{alertMessage}</Alert>}
+            {showAlert &&
+                <Alert variant="danger" onClose={() => setShowAlert(false)} dismissible>{alertMessage}</Alert>}
+            <Modal show={showModal} onHide={handleCloseModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Actividades Comerciales</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {modalProveedor && modalProveedor.actComerciales.map(act => <p key={act.id}>{act.description}</p>)}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseModal}>
+                        Cerrar
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 }

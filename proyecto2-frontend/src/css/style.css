@@ -328,3 +328,8 @@ input[type="submit"]:hover, input[type="date"]:hover, input[type="radio"]:hover 
     width: 100%;
     table-layout: fixed;
 }
+
+.scrollable-column {
+    max-height: 100px;
+    overflow-y: auto;
+}
