@@ -28,7 +28,7 @@ export const CreateFactura = () => {
         try {
             const [productosData, clientesData] = await Promise.all([
                 ProductoService.getProductos(proveedorId),
-                ClienteService.getClientes()
+                ClienteService.getClientesByProveedor(proveedorId)
             ]);
             setProductos(productosData.data);
             setClientes(clientesData.data);
