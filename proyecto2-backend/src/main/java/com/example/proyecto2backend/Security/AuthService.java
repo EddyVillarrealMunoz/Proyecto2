@@ -4,6 +4,7 @@ import com.example.proyecto2backend.Data.Repository.AdminRepository;
 import com.example.proyecto2backend.Data.Repository.ProveedorRepository;
 import com.example.proyecto2backend.Logic.Model.Admin;
 import com.example.proyecto2backend.Logic.Model.Proveedor;
+import com.example.proyecto2backend.Service.HaciendaSTUB;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,9 @@ public class AuthService {
 
     @Autowired
     AdminRepository adminRepository;
+
+    @Autowired
+    HaciendaSTUB haciendaSTUB;
 
     public Object login(String id, String password) {
         Admin admin;
@@ -28,7 +32,12 @@ public class AuthService {
         // Si no se encuentra en el repositorio de Admin, intenta encontrarlo en el repositorio de Proveedor
         proveedor = proveedorRepository.findById(id).orElse(null);
         if (proveedor != null && proveedor.getPassword().equals(password)) {
-            return proveedor;
+            // Valida el proveedor con HaciendaSTUB
+            if (haciendaSTUB.validateProveedorRegistration(proveedor)) {
+                return proveedor;
+            } else {
+                throw new RuntimeException("Provider not registered in Hacienda");
+            }
         }
 
         // Si no se encuentra en ninguno de los repositorios, lanza una excepción

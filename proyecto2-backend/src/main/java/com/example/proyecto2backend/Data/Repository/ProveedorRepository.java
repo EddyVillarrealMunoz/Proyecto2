@@ -14,4 +14,7 @@ public interface ProveedorRepository extends JpaRepository<Proveedor, String>
 {
     @Query("SELECT pr FROM Producto pr JOIN pr.proveedor p WHERE p.id = :proveedorId")
     List<Producto> findProductosByProveedorId(@Param("proveedorId") String proveedorId);
+
+
+
 }
