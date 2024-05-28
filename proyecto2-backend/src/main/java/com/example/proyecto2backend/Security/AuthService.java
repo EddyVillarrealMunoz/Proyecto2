@@ -34,6 +34,8 @@ public class AuthService {
         if (proveedor != null && proveedor.getPassword().equals(password)) {
             // Valida el proveedor con HaciendaSTUB
             if (haciendaSTUB.validateProveedorRegistration(proveedor)) {
+                // Guarda el proveedor en el repositorio de Proveedor
+                proveedorRepository.save(proveedor);
                 return proveedor;
             } else {
                 throw new RuntimeException("Provider not registered in Hacienda");
