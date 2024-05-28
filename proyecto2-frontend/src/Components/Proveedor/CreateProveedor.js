@@ -2,38 +2,47 @@ import React, {useEffect, useState} from 'react';
 import ProveedorService from "../../Services/ProveedorService";
 import ActComercialService from "../../Services/ActComercialService";
 import {Link, useNavigate, useParams} from "react-router-dom";
+import axios from 'axios';
 
 export const CreateOrUpdateProveedor = () => {
-    //------------------------------------------------------------------------------------------------------------------
-    // CONSTANTES
-    //------------------------------------------------------------------------------------------------------------------
     const [id, setId] = useState('');
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [actComerciales, setActComerciales] = useState([]); //Array que recupera todos los objetos tipo actComercial
+    const [actComerciales, setActComerciales] = useState([]);
     const [selectedActComerciales, setSelectedActComerciales] = useState([]);
+    const [isDisabled, setIsDisabled] = useState(false);
 
     const navigate = useNavigate();
     const {idUpdate} = useParams();
 
-    const saveOrUpdateProveedor = async (e) => {
-        e.preventDefault();
-
-        if (!id || !name || !email || !password) { // Validación de los campos del formulario
-            alert('Por favor, rellena todos los campos');
-            return;
+    const searchProveedor = async () => {
+        try {
+            const response = await ProveedorService.getProveedorByIdFromStub(id);
+            if (response.data) {
+                setId(response.data.id);
+                setName(response.data.name);
+                setEmail(response.data.email);
+                setPassword(response.data.password);
+                setIsDisabled(true); // Deshabilitar los campos de entrada
+            } else {
+                console.error('No se encontró el proveedor con el id: ' + id);
+                setIsDisabled(false); // Habilitar los campos de entrada
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Hubo un error al buscar el proveedor');
         }
+    }
+
+    const saveOrUpdateProveedor = async (e) => {
+        e.preventDefault(); // Evita que la página se refresque
 
         const proveedor = {id, name, email, password, actComerciales: selectedActComerciales.map(id => ({id}))};
-        console.log("Selected act comerciales: ", selectedActComerciales);
-        console.log("Act comerciales: ", actComerciales);
-
 
         if (idUpdate) {
             try {
                 const response = await ProveedorService.updateProveedor(idUpdate, proveedor);
-                console.log("Update",response.data);
                 alert('Proveedor actualizado correctamente');
                 navigate(`/profile-proveedor/${idUpdate}`);
             } catch (error) {
@@ -43,9 +52,8 @@ export const CreateOrUpdateProveedor = () => {
         } else {
             try {
                 const response = await ProveedorService.saveProveedor(proveedor);
-                console.log("Crear Proveedor" + response.data);
                 alert('Proveedor creado correctamente');
-                navigate('/login');
+                navigate(`/profile-proveedor/${idUpdate}`);
             } catch (error) {
                 console.error(error);
                 alert('Hubo un error al guardar el proveedor');
@@ -60,9 +68,6 @@ export const CreateOrUpdateProveedor = () => {
         return <h1 className={"text-center card-header"}>Registro Proveedor</h1>;
     }
 
-    //------------------------------------------------------------------------------------------------------------------
-    // USE EFFECT
-    //------------------------------------------------------------------------------------------------------------------
     useEffect(() =>
     {
         if (idUpdate) {
@@ -75,7 +80,6 @@ export const CreateOrUpdateProveedor = () => {
                 console.log(error);
             });
 
-            // Cargar las actividades comerciales del proveedor
             ProveedorService.getActComercialesByProveedorId(idUpdate).then((response) => {
                 setSelectedActComerciales(response.data.map(act => act.id));
             }).catch((error) => {
@@ -92,9 +96,6 @@ export const CreateOrUpdateProveedor = () => {
         })
     }, [])
 
-    //------------------------------------------------------------------------------------------------------------------
-    // FUNCIONES
-    //------------------------------------------------------------------------------------------------------------------
     function botonVolver() {
         if (idUpdate) {
             navigate(`/profile-proveedor/${idUpdate}`);
@@ -103,9 +104,6 @@ export const CreateOrUpdateProveedor = () => {
         }
     }
 
-    //------------------------------------------------------------------------------------------------------------------
-    // RENDER
-    //------------------------------------------------------------------------------------------------------------------
     return (
         <div>
             <div className='container'>
@@ -120,18 +118,21 @@ export const CreateOrUpdateProveedor = () => {
                                 <div className={"mb-3"}>
                                     <label className="form-label">Id</label>
                                     <input
+                                        disabled={isDisabled}
                                         type="text"
-                                        placeholder="Digite id "
+                                        placeholder="Digite id del proveedor"
                                         name="id"
                                         className="form-control"
                                         value={id}
                                         onChange={(e) => setId(e.target.value)}
                                     />
+                                    <button type="button" onClick={searchProveedor}>Buscar</button>
                                 </div>
                             }
                             <div className={"mb-3"}>
                                 <label className="form-label">Nombre</label>
                                 <input
+                                    disabled={isDisabled}
                                     type="text"
                                     placeholder="Digite nombre "
                                     name="name"
@@ -143,23 +144,13 @@ export const CreateOrUpdateProveedor = () => {
                             <div className={"mb-3"}>
                                 <label className="form-label">Email</label>
                                 <input
+                                    disabled={isDisabled}
                                     type="email"
                                     placeholder="Digite email "
                                     name="email"
                                     className="form-control"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                />
-                            </div>
-                            <div className={"mb-3"}>
-                                <label className="form-label">Password</label>
-                                <input
-                                    type="text"
-                                    placeholder="Digite password "
-                                    name="password"
-                                    className="form-control"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
                                 />
                             </div>
                             <div className={"mb-3"}>

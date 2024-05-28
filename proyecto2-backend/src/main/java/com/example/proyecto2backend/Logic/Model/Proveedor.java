@@ -31,9 +31,16 @@ public class Proveedor {
 
     private String password;
 
-    private boolean accepted;
+    private boolean accepted = false;
 
     private String rol = "PRO";
+
+    public Proveedor(String id, String name, String email, String password) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+    }
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
