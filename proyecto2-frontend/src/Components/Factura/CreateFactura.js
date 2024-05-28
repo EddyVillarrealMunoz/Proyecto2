@@ -69,7 +69,7 @@ export const CreateFactura = () => {
             cedulaCliente,
             tipoPago,
             date,
-            finalPrice: total,
+            finalPrice: parseFloat(total.toFixed(2)),
         };
 
         try {

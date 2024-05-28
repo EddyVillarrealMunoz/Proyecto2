@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import FacturaService from "../../Services/FacturaService";
 import { useNavigate } from 'react-router-dom';
 import facturaImage from "../../images/factura.png";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const FacturaCompleta = ({ idP }) => {
     const [factura, setFactura] = useState(null);
     const [cliente, setCliente] = useState(null);
-    const [listFacturaDetalles, setListFacturaDetalles] = useState([]); // Cambiado el nombre de la variable
+    const [listFacturaDetalles, setListFacturaDetalles] = useState([]);
     const facturaId = localStorage.getItem('facturaId');
     const navigate = useNavigate();
 
@@ -43,61 +44,78 @@ const FacturaCompleta = ({ idP }) => {
     }, [facturaId]);
 
     return (
-        <div id="factura">
-            {factura ? (
-                <div>
-                    <div id="encabezado">
-                        <img className="logoHome" src={facturaImage} alt=""/>
-                        <div id="informacion-cliente">
-                            <h3>Cliente</h3>
-                            <p>{cliente ? cliente.cedulaCliente : 'Cargando...'}</p>
-                            {cliente && (
-                                <>
-                                    <p>Nombre Completo: {cliente.name}</p>
-                                    <p>Teléfono: {cliente.telefono}</p>
-                                    <p>Email: {cliente.email}</p>
-                                </>
-                            )}
+        <div className="container">
+            <div className="row">
+                <div className="col-12">
+                    <img src={facturaImage} alt="Factura" className="logoFactura" />
+                    <div className="invoice-title">
+                        <h2 className="text-primary">Factura</h2><h3 className="pull-right">ID #{factura ? factura.id : 'Cargando...'}</h3>
+                    </div>
+                    <hr />
+                    <div className="row">
+                        <div className="col-6">
+                            <address>
+                                <strong>Facturado a:</strong> {cliente ? cliente.name : 'Cargando...'}<br />
+                                <strong>Correo:</strong> {cliente ? cliente.email : 'Cargando...'}
+                            </address>
                         </div>
-                        <div id="informacion-factura">
-                            <h3>Factura</h3>
-                            <p>Número: {factura.id}</p>
-                            <p>Fecha: {factura.date}</p>
-                            <p>Método de Pago: {factura.tipoPago}</p>
+                        <div className="col-6 text-right">
+                            <address>
+                                <strong>Fecha de la factura:</strong><br />
+                                {factura ? factura.date : 'Cargando...'}<br /><br />
+                            </address>
                         </div>
                     </div>
-                    <table id="tabla-productos">
-                        <thead>
-                        <tr>
-                            <th>CÓDIGO</th>
-                            <th>CANT.</th>
-                            <th>DESCRIPCIÓN</th>
-                            <th>PRECIO UNIT.</th>
-                            <th>IVA</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {listFacturaDetalles.map((detalle, index) => (
-                            <tr key={index}>
-                                <td>{detalle.id}</td>
-                                <td>{factura.listFacturaDetalle[index].cantidad}</td>
-                                <td>{detalle.description}</td>
-                                <td>{detalle.price}</td>
-                                <td>{detalle.ivaFee}</td>
-                            </tr>
-                        ))}
-                        </tbody>
-                        <tfoot>
-                        <tr>
-                            <th colSpan="4">TOTAL S</th>
-                            <td>{factura.finalPrice}</td>
-                        </tr>
-                        </tfoot>
-                    </table>
+                    <div className="row">
+                        <div className="col-6">
+                            <address>
+                                <strong>Método de pago:</strong><br />
+                                {factura ? factura.tipoPago : 'Cargando...'}
+                            </address>
+                        </div>
+                    </div>
                 </div>
-            ) : (
-                <p>Cargando...</p>
-            )}
+            </div>
+
+            <div className="row">
+                <div className="col-12">
+                    <div className="panel panel-default">
+                        <div className="panel-heading">
+                            <h3 className="panel-title"><strong>Resumen de la orden</strong></h3>
+                        </div>
+                        <div className="panel-body">
+                            <div className="table-responsive">
+                                <table className="table table-condensed">
+                                    <thead>
+                                    <tr>
+                                        <td><strong>Producto</strong></td>
+                                        <td className="text-center"><strong>Precio</strong></td>
+                                        <td className="text-center"><strong>Cantidad</strong></td>
+                                        <td className="text-right"><strong>Total</strong></td>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {listFacturaDetalles.map((detalle, index) => (
+                                        <tr key={index}>
+                                            <td>{detalle.description}</td>
+                                            <td className="text-center">{detalle.price}</td>
+                                            <td className="text-center">{factura.listFacturaDetalle[index].cantidad}</td>
+                                            <td className="text-right">{detalle.price * factura.listFacturaDetalle[index].cantidad}</td>
+                                        </tr>
+                                    ))}
+                                    <tr>
+                                        <td className="thick-line"></td>
+                                        <td className="thick-line"></td>
+                                        <td className="thick-line text-center"><strong>Total</strong></td>
+                                        <td className="thick-line text-right">{factura ? factura.finalPrice : 'Cargando...'}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
